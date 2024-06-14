@@ -18,6 +18,22 @@ const homeTemperatures = {
   bathroom: 23
 }
 
+async function callAPI(queryString: string): Promise<any> {
+  console.log('========= FAST API ============')
+  try {
+    const res = await fetch(
+      `https://fast-api-ritiztambi.replit.app/run_query?query=${queryString}`
+    )
+    const data = await res.json()
+    console.log('========= CALLING FAST API ============')
+    console.log(data)
+    return data
+  } catch (err) {
+    console.log('========= FAST API ERROR ============')
+    console.log(err)
+  }
+}
+
 export async function POST(req: Request) {
   // Parse the request body
   const input: {
@@ -74,30 +90,31 @@ export async function POST(req: Request) {
       ) {
         console.log('=========== TOOL CALL ==============')
         console.log(runResult.required_action.submit_tool_outputs.tool_calls)
-        const tool_outputs =
-          runResult.required_action.submit_tool_outputs.tool_calls.map(
-            (toolCall: any) => {
-              const parameters = JSON.parse(toolCall.function.arguments)
+        const toolCalls =
+          runResult.required_action.submit_tool_outputs.tool_calls
+        const toolOutputs = []
+        const availableFunctions: { [key: string]: Function } = {
+          run_sql_query: callAPI
+        }
 
-              switch (toolCall.function.name) {
-                case 'run_sql_query': {
-                  console.log("========= params ============")
-                  console.log(parameters)
+        for (const toolCall of toolCalls) {
+          const functionName = toolCall.function.name
+          const parameters = JSON.parse(toolCall.function.arguments)
+          const functionToCall = availableFunctions[functionName]
+          const functionResponse = await functionToCall(parameters)
+          console.log('========= functionResponse ============')
+          console.log(functionResponse)
+          const outputString = JSON.stringify(functionResponse)
 
-                  return {
-                    tool_call_id: toolCall.id,
-                    output: "student_gpa = 4.0"
-                  }
-                }
+          toolOutputs.push({
+            tool_call_id: toolCall.id,
+            output: outputString
+          })
+        }
 
-                default:
-                  throw new Error(
-                    `Unknown tool call function: ${toolCall.function.name}`
-                  )
-              }
-            }
-          )
-
+        const tool_outputs = toolOutputs
+        console.log('=========== calling forwardstream ===========')
+        console.log(tool_outputs)
         runResult = await forwardStream(
           openai.beta.threads.runs.submitToolOutputsStream(
             threadId,
