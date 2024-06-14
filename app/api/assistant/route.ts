@@ -23,10 +23,10 @@ async function callAPI(queryString: string): Promise<any> {
   try {
     const query = queryString.trim()
     const apiURL = `https://fast-api-ritiztambi.replit.app/run_query?query=${query}`
+    console.log('========= CALLING FAST API ============')
+    console.log(apiURL)
     const res = await fetch(apiURL)
     const data = await res.json()
-    console.log('========= CALLING FAST API ============')
-    console.log(data)
     return data
   } catch (err) {
     console.log('========= FAST API ERROR ============')
