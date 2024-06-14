@@ -47,7 +47,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   } = useAssistant({ api: '/api/assistant' })
   console.log('========= FRONTEND CHAT =========')
   console.log(messages)
-  const isLoading = status === 'awaiting'
+  const isLoading = status === 'in_progress' || status === 'queued'
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
