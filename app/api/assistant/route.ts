@@ -31,6 +31,7 @@ async function callAPI(queryString: string): Promise<any> {
   } catch (err) {
     console.log('========= FAST API ERROR ============')
     console.log(err)
+    return 'there was an error running the SQL query'
   }
 }
 
