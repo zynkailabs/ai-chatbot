@@ -72,57 +72,31 @@ export async function POST(req: Request) {
         runResult?.status === 'requires_action' &&
         runResult.required_action?.type === 'submit_tool_outputs'
       ) {
-        // const tool_outputs =
-        //   runResult.required_action.submit_tool_outputs.tool_calls.map(
-        //     (toolCall: any) => {
-        //       const parameters = JSON.parse(toolCall.function.arguments)
+        console.log('=========== TOOL CALL ==============')
+        console.log(runResult.required_action.submit_tool_outputs.tool_calls)
+        const tool_outputs =
+          runResult.required_action.submit_tool_outputs.tool_calls.map(
+            (toolCall: any) => {
+              const parameters = JSON.parse(toolCall.function.arguments)
 
-        //       switch (toolCall.function.name) {
-        //         case 'getRoomTemperature': {
-        //           const temperature =
-        //             homeTemperatures[
-        //               parameters.room as keyof typeof homeTemperatures
-        //             ]
+              switch (toolCall.function.name) {
+                case 'run_sql_query': {
+                  console.log("========= params ============")
+                  console.log(parameters)
 
-        //           return {
-        //             tool_call_id: toolCall.id,
-        //             output: temperature.toString()
-        //           }
-        //         }
+                  return {
+                    tool_call_id: toolCall.id,
+                    output: "student_gpa = 4.0"
+                  }
+                }
 
-        //         case 'setRoomTemperature': {
-        //           const oldTemperature =
-        //             homeTemperatures[
-        //               parameters.room as keyof typeof homeTemperatures
-        //             ]
-
-        //           homeTemperatures[
-        //             parameters.room as keyof typeof homeTemperatures
-        //           ] = parameters.temperature
-
-        //           sendDataMessage({
-        //             role: 'data',
-        //             data: {
-        //               oldTemperature,
-        //               newTemperature: parameters.temperature,
-        //               description: `Temperature in ${parameters.room} changed from ${oldTemperature} to ${parameters.temperature}`
-        //             }
-        //           })
-
-        //           return {
-        //             tool_call_id: toolCall.id,
-        //             output: `temperature set successfully`
-        //           }
-        //         }
-
-        //         default:
-        //           throw new Error(
-        //             `Unknown tool call function: ${toolCall.function.name}`
-        //           )
-        //       }
-        //     }
-        //   )
-        const tool_outputs = []
+                default:
+                  throw new Error(
+                    `Unknown tool call function: ${toolCall.function.name}`
+                  )
+              }
+            }
+          )
 
         runResult = await forwardStream(
           openai.beta.threads.runs.submitToolOutputsStream(
