@@ -11,7 +11,7 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip'
-import { IconArrowElbow, IconPlus } from '@/components/ui/icons'
+import { IconArrowElbow, IconUser } from '@/components/ui/icons'
 
 export interface PromptProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
@@ -56,7 +56,7 @@ export function PromptForm({
                 'absolute left-0 top-4 h-8 w-8 rounded-full bg-background p-0 sm:left-4'
               )}
             >
-              <IconPlus />
+              <IconUser />
               <span className="sr-only">New Chat</span>
             </Link>
           </TooltipTrigger>
