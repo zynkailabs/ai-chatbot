@@ -65,7 +65,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         isLoading={isLoading}
         stop={stop}
         append={append}
-        reload={null}
         messages={messages}
         input={input}
         setInput={setInput}
