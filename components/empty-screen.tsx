@@ -32,7 +32,7 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
           <ExternalLink href="https://supabase.com">Supabase</ExternalLink>.
         </p> */}
         <p className="leading-normal text-muted-foreground">
-          I'm your campus assistant. How can I help?
+          I&apos;m your campus assistant. How can I help?
         </p>
         {/* <div className="mt-4 flex flex-col items-start space-y-2">
           {exampleMessages.map((message, index) => (
