@@ -22,6 +22,9 @@ async function callAPI(queryString: string): Promise<any> {
   console.log('========= FAST API ============')
   try {
     const query = queryString.trim()
+    if (!query) {
+      return 'you ran an empty query string which is not valid'
+    }
     const apiURL = `https://fast-api-ritiztambi.replit.app/run_query?query=${query}`
     console.log('========= CALLING FAST API ============')
     console.log(apiURL)
