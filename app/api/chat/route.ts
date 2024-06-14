@@ -25,11 +25,11 @@ export async function POST(req: Request) {
   const { messages, previewToken } = json
   const userId = (await auth({ cookieStore }))?.user.id
 
-  if (!userId) {
-    return new Response('Unauthorized', {
-      status: 401
-    })
-  }
+  // if (!userId) {
+  //   return new Response('Unauthorized', {
+  //     status: 401
+  //   })
+  // }
 
   if (previewToken) {
     configuration.apiKey = previewToken
