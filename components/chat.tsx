@@ -1,6 +1,6 @@
 'use client'
 
-import { useChat, type Message } from 'ai/react'
+import { Message, useAssistant as useAssistant } from '@ai-sdk/react'
 
 import { cn } from '@/lib/utils'
 import { ChatList } from '@/components/chat-list'
@@ -34,20 +34,20 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   )
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
-  const { messages, append, reload, stop, isLoading, input, setInput } =
-    useChat({
-      initialMessages,
-      id,
-      body: {
-        id,
-        previewToken
-      },
-      onResponse(response) {
-        if (response.status === 401) {
-          toast.error(response.statusText)
-        }
-      }
-    })
+  const {
+    messages,
+    append,
+    stop,
+    status,
+    input,
+    setInput,
+    submitMessage,
+    handleInputChange,
+    error
+  } = useAssistant({ api: '/api/assistant' })
+  console.log('========= FRONTEND CHAT =========')
+  console.log(messages)
+  const isLoading = status === 'awaiting'
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
@@ -65,7 +65,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         isLoading={isLoading}
         stop={stop}
         append={append}
-        reload={reload}
+        reload={null}
         messages={messages}
         input={input}
         setInput={setInput}
