@@ -21,9 +21,9 @@ const homeTemperatures = {
 async function callAPI(queryString: string): Promise<any> {
   console.log('========= FAST API ============')
   try {
-    const res = await fetch(
-      `https://fast-api-ritiztambi.replit.app/run_query?query=${queryString}`
-    )
+    const query = queryString.trim()
+    const apiURL = `https://fast-api-ritiztambi.replit.app/run_query?query=${query}`
+    const res = await fetch(apiURL)
     const data = await res.json()
     console.log('========= CALLING FAST API ============')
     console.log(data)
@@ -102,7 +102,7 @@ export async function POST(req: Request) {
           const functionName = toolCall.function.name
           const parameters = JSON.parse(toolCall.function.arguments)
           const functionToCall = availableFunctions[functionName]
-          const functionResponse = await functionToCall(parameters)
+          const functionResponse = await functionToCall(parameters.query)
           console.log('========= functionResponse ============')
           console.log(functionResponse)
           const outputString = JSON.stringify(functionResponse)
