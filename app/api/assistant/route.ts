@@ -98,7 +98,6 @@ export async function POST(req: Request) {
           runResult.required_action.submit_tool_outputs.tool_calls
         const toolOutputs = []
         const availableFunctions: { [key: string]: Function } = {
-          retrieve_result: callAPI,
           run_sql_query: callAPI
         }
 
