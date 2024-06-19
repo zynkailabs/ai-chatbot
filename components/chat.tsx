@@ -45,8 +45,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     handleInputChange,
     error
   } = useAssistant({ api: '/api/assistant' })
-  console.log('========= FRONTEND CHAT =========')
-  console.log(messages)
   const isLoading = status === 'in_progress'
   return (
     <>

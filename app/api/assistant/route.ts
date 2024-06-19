@@ -18,22 +18,24 @@ const homeTemperatures = {
   bathroom: 23
 }
 
+const FASTAPI_BASE_URL = 'https://fast-api-ritiztambi.replit.app'
+
 async function callAPI(queryString: string): Promise<any> {
-  console.log('========= FAST API ============')
   try {
     const query = queryString.trim()
     if (!query) {
+      console.log(
+        `[CampusAssistant] Tried calling backend API with an empty query; returning early.`
+      )
       return 'you ran an empty query string which is not valid'
     }
-    const apiURL = `https://fast-api-ritiztambi.replit.app/run_query?query=${query}`
-    console.log('========= CALLING FAST API ============')
-    console.log(apiURL)
+    const apiURL = FASTAPI_BASE_URL.concat(`/run_query?query=${query}`)
+    console.log(`[CampusAssistant] Calling backend with query: ${query}`)
     const res = await fetch(apiURL)
     const data = await res.json()
     return data
   } catch (err) {
-    console.log('========= FAST API ERROR ============')
-    console.log(err)
+    console.log(`[CampusAssistant] Backend API error: ${err}`)
     return 'there was an error running the SQL query'
   }
 }
@@ -44,8 +46,7 @@ export async function POST(req: Request) {
     threadId: string | null
     message: string
   } = await req.json()
-  console.log('=========== RECEIVED INPUT ============')
-  console.log(input)
+  console.log(`[CampusAssistant] User message: ${input.message}`)
 
   // Create a thread if needed
   const threadId = input.threadId ?? (await openai.beta.threads.create({})).id
@@ -63,10 +64,8 @@ export async function POST(req: Request) {
   return AssistantResponse(
     { threadId, messageId: createdMessage.id },
     async ({ forwardStream, sendDataMessage }) => {
-      console.log('=============== RUNNING ASSISTANT ==============')
-      console.log(threadId)
-      console.log(process.env.ASSISTANT_ID)
-      console.log(req.signal)
+      console.log(`[CampusAssistant] Running assistant for thread ${threadId}`)
+
       // Run the assistant on the thread
       const runStream = openai.beta.threads.runs.stream(
         threadId,
@@ -80,22 +79,26 @@ export async function POST(req: Request) {
         { signal: req.signal }
       )
 
-      console.log('Calling forwardStream')
-      console.log(runStream)
       // forward run status would stream message deltas
       let runResult = await forwardStream(runStream)
-      console.log('=============== RUN RESULT ==============')
-      console.log(runResult)
+
+      console.log(
+        `[CampusAssistant] Assistant run result status: ${runResult?.status}`
+      )
 
       // status can be: queued, in_progress, requires_action, cancelling, cancelled, failed, completed, or expired
       while (
         runResult?.status === 'requires_action' &&
         runResult.required_action?.type === 'submit_tool_outputs'
       ) {
-        console.log('=========== TOOL CALL ==============')
-        console.log(runResult.required_action.submit_tool_outputs.tool_calls)
         const toolCalls =
           runResult.required_action.submit_tool_outputs.tool_calls
+        console.log(
+          `[CampusAssistant] Tool calls triggered: ${toolCalls.map(
+            x => x.function.name
+          )}`
+        )
+
         const toolOutputs = []
         const availableFunctions: { [key: string]: Function } = {
           run_sql_query: callAPI
@@ -105,10 +108,16 @@ export async function POST(req: Request) {
           const functionName = toolCall.function.name
           const parameters = JSON.parse(toolCall.function.arguments)
           const functionToCall = availableFunctions[functionName]
+          if (!functionToCall) {
+            console.log(`[CampusAssistant] Unknown function: ${functionName}`)
+            continue
+          }
           const functionResponse = await functionToCall(parameters.query)
-          console.log('========= functionResponse ============')
-          console.log(functionResponse)
           const outputString = JSON.stringify(functionResponse)
+
+          console.log(
+            `[CampusAssistant] Response for function ${functionName} with arguments: ${parameters} => ${outputString}`
+          )
 
           toolOutputs.push({
             tool_call_id: toolCall.id,
@@ -117,8 +126,6 @@ export async function POST(req: Request) {
         }
 
         const tool_outputs = toolOutputs
-        console.log('=========== calling forwardstream ===========')
-        console.log(tool_outputs)
         runResult = await forwardStream(
           openai.beta.threads.runs.submitToolOutputsStream(
             threadId,
