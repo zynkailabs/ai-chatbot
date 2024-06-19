@@ -108,12 +108,16 @@ export async function POST(req: Request) {
           const functionName = toolCall.function.name
           const parameters = JSON.parse(toolCall.function.arguments)
           const functionToCall = availableFunctions[functionName]
+          
+          let outputString = null
           if (!functionToCall) {
             console.log(`[CampusAssistant] Unknown function: ${functionName}`)
-            continue
+            outputString =
+              `That is not a valid function. The functions available to you are: ${Object.keys(availableFunctions)}`
+          } else {
+            const functionResponse = await functionToCall(parameters.query)
+            outputString = JSON.stringify(functionResponse)
           }
-          const functionResponse = await functionToCall(parameters.query)
-          const outputString = JSON.stringify(functionResponse)
 
           console.log(
             `[CampusAssistant] Response for function ${functionName} with arguments: ${parameters} => ${outputString}`
