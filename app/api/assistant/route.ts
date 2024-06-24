@@ -1,6 +1,7 @@
 import 'server-only'
 import { AssistantResponse } from 'ai'
 import OpenAI from 'openai'
+import APIClient from '../api_client'
 
 // Create an OpenAI API client (that's edge friendly!)
 const openai = new OpenAI({
@@ -20,23 +21,22 @@ const homeTemperatures = {
 
 const FASTAPI_BASE_URL = 'https://fast-api-ritiztambi.replit.app'
 
-async function callAPI(queryString: string): Promise<any> {
+const corpoAPIClient = new APIClient(
+  process.env.CLIENT_ID || '',
+  process.env.CLIENT_SECRET || '',
+  process.env.SCOPE || ''
+)
+
+async function callCorpoAPI(oDataQuery: string): Promise<any> {
   try {
-    const query = queryString.trim()
-    if (!query) {
-      console.log(
-        `[CampusAssistant] Tried calling backend API with an empty query; returning early.`
-      )
-      return 'you ran an empty query string which is not valid'
-    }
-    const apiURL = FASTAPI_BASE_URL.concat(`/run_query?query=${query}`)
-    console.log(`[CampusAssistant] Calling backend with query: ${query}`)
-    const res = await fetch(apiURL)
-    const data = await res.json()
-    return data
-  } catch (err) {
-    console.log(`[CampusAssistant] Backend API error: ${err}`)
-    return 'there was an error running the SQL query'
+    console.time('[CampusAssistant] Corposerve API call latency')
+    const corpoResponse = await corpoAPIClient.fetchData(oDataQuery)
+    console.timeEnd('[CampusAssistant] Corposerve API call latency')
+    
+    return JSON.stringify(corpoResponse)
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
   }
 }
 
@@ -101,22 +101,23 @@ export async function POST(req: Request) {
 
         const toolOutputs = []
         const availableFunctions: { [key: string]: Function } = {
-          run_sql_query: callAPI
+          access_data: callCorpoAPI
         }
 
         for (const toolCall of toolCalls) {
           const functionName = toolCall.function.name
           const parameters = JSON.parse(toolCall.function.arguments)
           const functionToCall = availableFunctions[functionName]
-          
+
           let outputString = null
           if (!functionToCall) {
             console.log(`[CampusAssistant] Unknown function: ${functionName}`)
-            outputString =
-              `That is not a valid function. The functions available to you are: ${Object.keys(availableFunctions)}`
+            outputString = `That is not a valid function. The functions available to you are: ${Object.keys(
+              availableFunctions
+            )}`
           } else {
-            const functionResponse = await functionToCall(parameters.query)
-            outputString = JSON.stringify(functionResponse)
+            const functionResponse = await functionToCall(parameters.odata_query)
+            outputString = functionResponse
           }
 
           console.log(
