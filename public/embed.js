@@ -23,7 +23,7 @@
     bottom: 100px;
     right: 20px;
     width: 350px;
-    height: 500px;
+    height: 600px;
     max-width: 90vw;
     max-height: calc(100vh - 120px);
     border: none;
