@@ -22,8 +22,8 @@
     position: fixed;
     bottom: 100px;
     right: 20px;
-    width: 350px;
-    height: 600px;
+    width: 450px;
+    height: 700px;
     max-width: 90vw;
     max-height: calc(100vh - 120px);
     border: none;
