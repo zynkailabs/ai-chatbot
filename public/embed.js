@@ -16,8 +16,8 @@
   // Create iframe
   const iframe = document.createElement('iframe');
   // iframe.src = `https://www.my-chatbot-url.com/chat/${chatbotId}?domain=${encodeURIComponent(domain)}`;
-  iframe.src = "https://vercel-ai-chatbot-with-supabase-xaeb.vercel.app"
-  iframe.id = 'chatbot-iframe';
+  iframe.src = "https://vercel-ai-chatbot-with-supabase-xaeb.vercel.app";
+  iframe.id = 'campus-assistant-chatbot-xaeb-iframe';
   iframe.style.cssText = `
     position: fixed;
     bottom: 100px;
@@ -37,9 +37,29 @@
     display: none;
   `;
 
+  // Add CSS media query for mobile devices
+  const style = document.createElement('style');
+  style.id = 'campus-assistant-chatbot-xaeb-style';
+  style.innerHTML = `
+    @media screen and (max-width: 767px) {
+      #chatbot-iframe-unique {
+        width: 90vw;
+        height: calc(100vh - 120px);
+        bottom: 50px;
+        right: 10px;
+      }
+
+      #chatbot-toggle-button-unique {
+        bottom: 10px;
+        right: 10px;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
   // Create toggle button
   const button = document.createElement('button');
-  button.id = 'chatbot-toggle';
+  button.id = 'chatbot-toggle-button-unique';
   button.innerHTML = upArrowSVG;
   button.style.cssText = `
     position: fixed;
