@@ -9,9 +9,16 @@
   //   return;
   // }
 
-  // SVG icons
-  const upArrowSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>`;
-  const downArrowSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
+  // SVG icons with explicit width and height attributes
+  const upArrowSVG = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="campus-assistant-chatbot-xaeb-icon">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>`;
+
+  const downArrowSVG = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="campus-assistant-chatbot-xaeb-icon">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>`;
 
   // Create iframe
   const iframe = document.createElement('iframe');
@@ -42,24 +49,28 @@
   style.id = 'campus-assistant-chatbot-xaeb-style';
   style.innerHTML = `
     @media screen and (max-width: 767px) {
-      #chatbot-iframe-unique {
+      #campus-assistant-chatbot-xaeb-iframe {
         width: 90vw;
-        height: calc(100vh - 120px);
+        height: calc(100dvh - 120px);
         bottom: 50px;
         right: 10px;
       }
 
-      #chatbot-toggle-button-unique {
+      #campus-assistant-chatbot-xaeb-toggle-button {
         bottom: 10px;
         right: 10px;
       }
+    }
+    .campus-assistant-chatbot-xaeb-icon {
+      width: 24px;
+      height: 24px;
     }
   `;
   document.head.appendChild(style);
 
   // Create toggle button
   const button = document.createElement('button');
-  button.id = 'chatbot-toggle-button-unique';
+  button.id = 'campus-assistant-chatbot-xaeb-toggle-button';
   button.innerHTML = upArrowSVG;
   button.style.cssText = `
     position: fixed;
