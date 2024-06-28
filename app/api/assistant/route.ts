@@ -70,7 +70,11 @@ export async function POST(req: Request) {
       const runStream = openai.beta.threads.runs.stream(
         threadId,
         {
-          assistant_id: "asst_ypSMIStj4HTd802bJaEOpH9t"
+          assistant_id:
+            process.env.ASSISTANT_ID ??
+            (() => {
+              throw new Error('ASSISTANT_ID is not set')
+            })()
         },
         { signal: req.signal }
       )
