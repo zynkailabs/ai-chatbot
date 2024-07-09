@@ -3,6 +3,8 @@ import { AssistantResponse } from 'ai'
 import OpenAI from 'openai'
 import APIClient from '../api_client'
 
+// dummy comment for commit
+
 // Create an OpenAI API client (that's edge friendly!)
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
@@ -32,7 +34,7 @@ async function callCorpoAPI(oDataQuery: string): Promise<any> {
     console.time('[CampusAssistant] Corposerve API call latency')
     const corpoResponse = await corpoAPIClient.fetchData(oDataQuery)
     console.timeEnd('[CampusAssistant] Corposerve API call latency')
-    
+
     return JSON.stringify(corpoResponse)
   } catch (error) {
     console.error('API request failed:', error)
@@ -116,7 +118,9 @@ export async function POST(req: Request) {
               availableFunctions
             )}`
           } else {
-            const functionResponse = await functionToCall(parameters.odata_query)
+            const functionResponse = await functionToCall(
+              parameters.odata_query
+            )
             outputString = functionResponse
           }
 
