@@ -28,13 +28,13 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
       >
         {message.role === 'user' ? <IconUser /> : <IconAISparkles />}
       </div>
-      <div className="ml-2 flex-1 space-y-2 overflow-hidden px-1">
+      <div className="ml-2 flex-1 space-y-2 overflow-hidden px-1 text-background">
         <MemoizedReactMarkdown
-          className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
+          className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 text-background"
           remarkPlugins={[remarkGfm, remarkMath]}
           components={{
             p({ children }) {
-              return <p className="mb-2 last:mb-0">{children}</p>
+              return <p className="mb-2 last:mb-0 text-background text-inherit">{children}</p>
             },
             code({ node, inline, className, children, ...props }) {
               if (children.length) {
