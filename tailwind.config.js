@@ -25,6 +25,7 @@ module.exports = {
         foreground: 'hsl(var(--foreground))',
         corpoBackground: 'hsl(var(--corpo-background))',
         corpoHeaderBackground: 'hsl(var(--corpo-header-background))',
+        corpoChatPanelBackground: 'hsl(var(--corpo-chatpanel-background))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))'
@@ -127,10 +128,10 @@ module.exports = {
             '--tw-prose-invert-pre-code': theme('colors.background'),
             '--tw-prose-invert-pre-bg': theme('colors.primary.DEFAULT'),
             '--tw-prose-invert-th-borders': theme('colors.background'),
-            '--tw-prose-invert-td-borders': theme('colors.background'),
-          },
-        },
-      }),
+            '--tw-prose-invert-td-borders': theme('colors.background')
+          }
+        }
+      })
     }
   },
   plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')]
