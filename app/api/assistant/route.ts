@@ -2,6 +2,7 @@ import 'server-only'
 import { AssistantResponse } from 'ai'
 import OpenAI from 'openai'
 import APIClient from '../api_client'
+import { AssistantStream } from 'openai/lib/AssistantStream'
 
 // dummy comment for commit
 
@@ -13,21 +14,13 @@ const openai = new OpenAI({
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30
 
-const homeTemperatures = {
-  bedroom: 20,
-  'home office': 21,
-  'living room': 21,
-  kitchen: 22,
-  bathroom: 23
-}
-
-const FASTAPI_BASE_URL = 'https://fast-api-ritiztambi.replit.app'
-
 const corpoAPIClient = new APIClient(
   process.env.CLIENT_ID || '',
   process.env.CLIENT_SECRET || '',
   process.env.SCOPE || ''
 )
+
+const USER_FACING_ERROR_MESSAGE = "I'm sorry, I'm having trouble helping you at the moment. Please try again later!";
 
 async function callCorpoAPI(oDataQuery: string): Promise<any> {
   try {
@@ -65,28 +58,54 @@ export async function POST(req: Request) {
 
   return AssistantResponse(
     { threadId, messageId: createdMessage.id },
-    async ({ forwardStream, sendDataMessage }) => {
+    async ({ forwardStream, sendMessage }) => {
       console.log(`[CampusAssistant] Running assistant for thread ${threadId}`)
 
-      // Run the assistant on the thread
-      const runStream = openai.beta.threads.runs.stream(
-        threadId,
-        {
-          assistant_id:
-            process.env.ASSISTANT_ID ??
-            (() => {
-              throw new Error('ASSISTANT_ID is not set')
-            })()
-        },
-        { signal: req.signal }
-      )
+      const sendErrorMessage = (message: string) => {
+        console.log("[CampusAssistant] Sending error message to the user.")
+        sendMessage({
+          id: createdMessage.id,
+          role: 'assistant',
+          content: [
+            {
+              type: 'text',
+              text: {
+                value: message
+              }
+            }
+          ]
+        })
+      }
+
+      let runStream: AssistantStream;
+      try {
+        runStream = openai.beta.threads.runs.stream(
+          threadId,
+          {
+            assistant_id:
+              process.env.ASSISTANT_ID ??
+              (() => {
+                throw new Error('ASSISTANT_ID is not set')
+              })()
+          },
+          { signal: req.signal }
+        )
+      } catch (error) {
+        console.log("[CampusAssistant] Error while creating run stream:", error)
+        sendErrorMessage(USER_FACING_ERROR_MESSAGE)
+        return
+      }
 
       // forward run status would stream message deltas
       let runResult = await forwardStream(runStream)
-
       console.log(
         `[CampusAssistant] Assistant run result status: ${runResult?.status}`
       )
+
+      if (!runResult) {
+        sendErrorMessage(USER_FACING_ERROR_MESSAGE)
+        return
+      }
 
       // status can be: queued, in_progress, requires_action, cancelling, cancelled, failed, completed, or expired
       while (
