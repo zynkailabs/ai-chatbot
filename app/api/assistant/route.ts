@@ -48,7 +48,7 @@ export async function POST(req: Request) {
   } = await req.json()
   console.log(`[CampusAssistant] User message: ${input.message}`)
 
-  // not doing any validation here for now
+  // not doing any validation here for now; we should add it when we have more than one user type
   let userType: CorporateServeUserType = input.data.userType || "student"
   const userID = input.data.userID || null
   console.log(`[CampusAssistant] UserType: ${userType} UserID: ${userID}`)
