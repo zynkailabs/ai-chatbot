@@ -7,8 +7,7 @@ export async function TextHeader() {
         style={{
           color: 'white',
           fontSize: '1.125rem',
-          fontWeight: 'bold',
-          font: 'paytone-one'
+          fontWeight: 'bold'
         }}
       >
         CS Campus Genie
