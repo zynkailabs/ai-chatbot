@@ -3,8 +3,17 @@ import { Chat } from '@/components/chat'
 
 export const runtime = 'edge'
 
-export default function IndexPage() {
-  const id = nanoid()
+export interface IndexPageProps {
+  params: {
+    userType: string,
+    userID: string
+  }
+}
 
-  return <Chat id={id} />
+export default function IndexPage({ params }: IndexPageProps) {
+  const id = nanoid()
+  const userType = params.userType
+  const userID = params.userID
+
+  return <Chat id={id} additionalData={{userType: userType, userID: userID}} />
 }

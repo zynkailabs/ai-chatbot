@@ -3,6 +3,7 @@ import { AssistantResponse } from 'ai'
 import OpenAI from 'openai'
 import APIClient from '../api_client'
 import { AssistantStream } from 'openai/lib/AssistantStream'
+import { CorporateServeUserType, VALID_CORPORATE_SERVE_USER_TYPES } from 'lib/types'
 
 // dummy comment for commit
 
@@ -39,10 +40,19 @@ export async function POST(req: Request) {
   // Parse the request body
   const input: {
     threadId: string | null
-    message: string
+    message: string,
+    data: {
+      userType?: CorporateServeUserType | null,
+      userID?: string | null
+    }
   } = await req.json()
   console.log(`[CampusAssistant] User message: ${input.message}`)
 
+  // not doing any validation here for now
+  let userType: CorporateServeUserType = input.data.userType || "student"
+  const userID = input.data.userID || null
+  console.log(`[CampusAssistant] UserType: ${userType} UserID: ${userID}`)
+    
   // Create a thread if needed
   const threadId = input.threadId ?? (await openai.beta.threads.create({})).id
 

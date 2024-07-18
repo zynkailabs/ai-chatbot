@@ -18,6 +18,7 @@ export interface ChatPanelProps
   > {
   id?: string
   isLoading: boolean
+  additionalData?: Record<any, any>
 }
 
 export function ChatPanel({
@@ -27,8 +28,11 @@ export function ChatPanel({
   isLoading,
   input,
   setInput,
-  messages
+  messages,
+  additionalData
 }: ChatPanelProps) {
+  const userType = additionalData?.userType
+  const userID = additionalData?.userID
   return (
     <div className="fixed inset-x-0 bottom-0 bg-corpoBackground">
       {/* <ButtonScrollToBottom /> */}
@@ -48,11 +52,14 @@ export function ChatPanel({
         <div className="space-y-4 border-t bg-corpoChatPanelBackground px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
           <PromptForm
             onSubmit={async value => {
-              await append({
-                id,
-                content: value,
-                role: 'user'
-              })
+              await append(
+                {
+                  id,
+                  content: value,
+                  role: 'user'
+                },
+                { data: { userType: userType, userID: userID } }
+              )
             }}
             input={input}
             setInput={setInput}
