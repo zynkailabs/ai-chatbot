@@ -36,6 +36,17 @@ async function callCorpoAPI(oDataQuery: string): Promise<any> {
   }
 }
 
+function constructUserInstructions(userType: CorporateServeUserType, userID: string | null): string {
+  const userTypeUppercase = userType.toUpperCase()
+  if (!userID) {
+    return ""
+  }
+
+  return `\n
+${userTypeUppercase} DETAILS TO USE IN YOUR QUERIES:\n
+${userType} ID = ${userID}\n`
+}
+
 export async function POST(req: Request) {
   // Parse the request body
   const input: {
@@ -96,7 +107,8 @@ export async function POST(req: Request) {
               process.env.ASSISTANT_ID ??
               (() => {
                 throw new Error('ASSISTANT_ID is not set')
-              })()
+              })(),
+            additional_instructions: constructUserInstructions(userType, userID)
           },
           { signal: req.signal }
         )
