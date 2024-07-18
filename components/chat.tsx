@@ -26,8 +26,8 @@ export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
   id?: string
   additionalData: {
-    userType?: string
-    userID?: string
+    userType?: string | null
+    userID?: string | null
   }
 }
 

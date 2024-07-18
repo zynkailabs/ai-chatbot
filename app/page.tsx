@@ -5,8 +5,8 @@ export const runtime = 'edge'
 
 export interface IndexPageProps {
   params: {
-    userType: string,
-    userID: string
+    userType?: string | null,
+    userID?: string | null
   }
 }
 
