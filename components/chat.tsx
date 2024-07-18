@@ -25,7 +25,7 @@ const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
   id?: string
-  additionalData: {
+  additionalData?: {
     userType?: string | null
     userID?: string | null
   }
