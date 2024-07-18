@@ -3,6 +3,8 @@
   // const config = window.embeddedChatbotConfig || {};
   // const chatbotId = config.chatbotId || document.currentScript.getAttribute('chatbotId');
   // const domain = config.domain || document.currentScript.getAttribute('domain');
+  const userType = document.currentScript.getAttribute('userType') || 'student';
+  const userID = document.currentScript.getAttribute('userID') || null;
 
   // if (!chatbotId || !domain) {
   //   console.error('Chatbot ID and domain are required for embedding.');
@@ -51,7 +53,7 @@
 
   // Create iframe
   const iframe = document.createElement('iframe');
-  iframe.src = "https://vercel-ai-chatbot-with-supabase-xaeb.vercel.app";
+  iframe.src = `https://vercel-ai-chatbot-with-supabase-xaeb.vercel.app?userType=${userType}&userID=${userID}`;
   iframe.id = 'campus-assistant-chatbot-xaeb-iframe';
   iframe.style.cssText = `
     position: fixed;

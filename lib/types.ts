@@ -11,6 +11,9 @@ export interface Chat extends Record<string, any> {
   sharePath?: string // Refactor to use RLS
 }
 
+export const VALID_CORPORATE_SERVE_USER_TYPES = ["student", "teacher", "admin"]
+export type CorporateServeUserType = 'student' | 'teacher' | 'admin'
+
 export type ServerActionResult<Result> = Promise<
   | Result
   | {

@@ -3,6 +3,7 @@ import { AssistantResponse } from 'ai'
 import OpenAI from 'openai'
 import APIClient from '../api_client'
 import { AssistantStream } from 'openai/lib/AssistantStream'
+import { CorporateServeUserType, VALID_CORPORATE_SERVE_USER_TYPES } from 'lib/types'
 
 // dummy comment for commit
 
@@ -35,14 +36,34 @@ async function callCorpoAPI(oDataQuery: string): Promise<any> {
   }
 }
 
+function constructUserInstructions(userType: CorporateServeUserType, userID: string | null): string {
+  const userTypeUppercase = userType.toUpperCase()
+  if (!userID) {
+    return ""
+  }
+
+  return `\n
+${userTypeUppercase} DETAILS TO USE IN YOUR QUERIES:\n
+${userType} ID = ${userID}\n`
+}
+
 export async function POST(req: Request) {
   // Parse the request body
   const input: {
     threadId: string | null
-    message: string
+    message: string,
+    data: {
+      userType?: CorporateServeUserType | null,
+      userID?: string | null
+    }
   } = await req.json()
   console.log(`[CampusAssistant] User message: ${input.message}`)
 
+  // not doing any validation here for now; we should add it when we have more than one user type
+  let userType: CorporateServeUserType = input.data.userType || "student"
+  const userID = input.data.userID || null
+  console.log(`[CampusAssistant] UserType: ${userType} UserID: ${userID}`)
+    
   // Create a thread if needed
   const threadId = input.threadId ?? (await openai.beta.threads.create({})).id
 
@@ -86,7 +107,8 @@ export async function POST(req: Request) {
               process.env.ASSISTANT_ID ??
               (() => {
                 throw new Error('ASSISTANT_ID is not set')
-              })()
+              })(),
+            additional_instructions: constructUserInstructions(userType, userID)
           },
           { signal: req.signal }
         )
