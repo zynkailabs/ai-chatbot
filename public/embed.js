@@ -4,7 +4,7 @@
   // const chatbotId = config.chatbotId || document.currentScript.getAttribute('chatbotId');
   // const domain = config.domain || document.currentScript.getAttribute('domain');
   const userType = document.currentScript.getAttribute('userType') || 'student';
-  const userID = document.currentScript.getAttribute('userID') || null;
+  const userID = document.currentScript.getAttribute('userID') || '';
 
   // if (!chatbotId || !domain) {
   //   console.error('Chatbot ID and domain are required for embedding.');
