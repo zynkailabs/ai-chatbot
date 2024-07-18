@@ -3,17 +3,18 @@ import { Chat } from '@/components/chat'
 
 export const runtime = 'edge'
 
-export interface IndexPageProps {
-  params: {
-    userType?: string | null,
-    userID?: string | null
-  }
-}
+const getQueryParamAsString = (param: string | string[] | undefined): string | null =>
+  Array.isArray(param) ? param[0] : param ?? null;
 
-export default function IndexPage({ params }: IndexPageProps) {
-  const id = nanoid()
-  const userType = params.userType
-  const userID = params.userID
+export default function IndexPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const id = nanoid();
 
-  return <Chat id={id} additionalData={{userType: userType, userID: userID}} />
+  const userType = getQueryParamAsString(searchParams['userType']);
+  const userID = getQueryParamAsString(searchParams['userID']);
+
+  return <Chat id={id} additionalData={{ userType, userID }} />;
 }
