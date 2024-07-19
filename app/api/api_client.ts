@@ -5,27 +5,31 @@ const AUTH_ENDPOINT =
 const API_BASE_URL = `https://api.businesscentral.dynamics.com/v2.0/ccc52638-bd4d-4b2c-a4d3-f1dafee1500e/CSCM/ODataV4/Company('CRONUS%20IN')`
 
 class UrlBuilder {
-  constructor(baseUrl) {
+  private url: URL
+  private customPath: string[]
+  private customSearchParams: URLSearchParams
+
+  constructor(baseUrl: string) {
     this.url = new URL(baseUrl)
     this.customPath = this.url.pathname.split('/').filter(Boolean)
     this.customSearchParams = new URLSearchParams(this.url.search)
   }
 
-  addPath(...segments) {
+  addPath(...segments: string[]) {
     this.customPath = this.customPath.concat(
       segments.flatMap(segment => segment.split('/').filter(Boolean))
     )
     return this
   }
 
-  addSearchParams(params) {
+  addSearchParams(params: Record<string, string>): this {
     for (const [key, value] of Object.entries(params)) {
       this.customSearchParams.append(key, value)
     }
     return this
   }
 
-  toString() {
+  toString(): string {
     const fullPath = '/' + this.customPath.join('/')
     const searchString = this.customSearchParams.toString()
     const searchPart = searchString ? `?${searchString}` : ''
@@ -91,7 +95,7 @@ class APIClient {
       // If queryParams is a Record, construct the query string
       const urlBuilder = new UrlBuilder(url)
       urlBuilder.addSearchParams(queryParams)
-      url = urlObject.toString()
+      url = urlBuilder.toString()
     }
     return url
   }
