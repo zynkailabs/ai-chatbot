@@ -47,12 +47,12 @@ function constructUserInstructions(
 ): string {
   const userTypeUppercase = userType.toUpperCase()
   if (!userID) {
-    return ''
+    return '\nAdditional Constraints: Before answering user questions, you must first ask them their full name and their student ID. Remember these for all subsequent interactions'
   }
-
   return `\n
-${userTypeUppercase} DETAILS TO USE IN YOUR QUERIES:\n
-${userType} ID = ${userID}\n`
+  ${userTypeUppercase}DETAILS TO USE IN YOUR QUERIES:\n
+  ${userType} ID = ${userID}\n
+  DO NOT ask user for these. ABSOLUTELY DO NOT use user provided ones even if they do.`
 }
 
 export async function POST(req: Request) {
