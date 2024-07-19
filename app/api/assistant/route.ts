@@ -27,11 +27,11 @@ const corpoAPIClient = new APIClient(
 const USER_FACING_ERROR_MESSAGE =
   "I'm sorry, I'm having trouble helping you at the moment. Please try again later!"
 
-async function callCorpoAPI(oDataQuery: string): Promise<any> {
+async function callCorpoAPI(query: string): Promise<any> {
   try {
     console.time('[CampusAssistant] Corposerve API call latency')
-    const corpoResponse = await corpoAPIClient.fetchData(oDataQuery)
-    //const corpoResponse = await corpoAPIClient.fetchSQLData(oDataQuery)
+    const corpoResponse = await corpoAPIClient.fetchData(query)
+    //const corpoResponse = await corpoAPIClient.fetchSQLData(query)
     console.timeEnd('[CampusAssistant] Corposerve API call latency')
 
     return JSON.stringify(corpoResponse)
