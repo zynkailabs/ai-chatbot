@@ -6,10 +6,10 @@ const AUTH_ENDPOINT =
 const SQL_TOKEN = 'A97F2D14-4A69-4498-B1F0-CB3334A0C32F'
 
 const API_BASE_URL = {
-   OData: `https://api.businesscentral.dynamics.com/v2.0/ccc52638-bd4d-4b2c-a4d3-f1dafee1500e/CSCM/ODataV4/Company('CRONUS%20IN')`,
+  OData: `https://api.businesscentral.dynamics.com/v2.0/ccc52638-bd4d-4b2c-a4d3-f1dafee1500e/CSCM/ODataV4/Company('CRONUS%20IN')`,
   SQL: `http://mearestapi.corporateserve.com/api/SQLQuery`
 }
-  
+
 type QueryType = 'OData' | 'SQL'
 
 class UrlBuilder {
@@ -128,7 +128,6 @@ class APIClient {
     queryType: QueryType,
     body: string | null
   ): Promise<any> {
-
     let url = this.getURL(queryParams, queryType)
     const token = await this.getToken()
     let header = this.getHeaders(token, queryType)
@@ -157,32 +156,24 @@ class APIClient {
       }
 
       return response.json()
-      
     } catch (error) {
       console.error('API request failed:', error)
       throw error
     }
   }
 
-  async fetchData(
-    queryParams: Record<string, string> | string | null = {},
-    queryType: QueryType
-  ) {
-    return this.request('GET', queryParams, (queryType = 'OData'), null)
+  async fetchData(queryParams: Record<string, string> | string | null = {}) {
+    return this.request('GET', queryParams, 'OData', null)
   }
 
-  async fetchSQLData(
-    queryParams: Record<string, string> | string | null = {},
-    queryType: QueryType
-  ) {
+  async fetchSQLData(queryParams: Record<string, string> | string | null = {}) {
     let body = JSON.stringify({
       query: queryParams,
       token: SQL_TOKEN
     })
     queryParams = null
-    return this.request('GET', queryParams, (queryType = 'SQL'), body)
+    return this.request('POST', queryParams, 'SQL', body)
   }
-
 }
 
 export default APIClient
