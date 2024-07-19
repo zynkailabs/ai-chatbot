@@ -1,9 +1,37 @@
-import { URL } from "url"
+import { URL } from 'url'
 
 const AUTH_ENDPOINT =
   'https://login.microsoftonline.com/ccc52638-bd4d-4b2c-a4d3-f1dafee1500e/oauth2/v2.0/token'
-const API_BASE_URL =
-  `https://api.businesscentral.dynamics.com/v2.0/ccc52638-bd4d-4b2c-a4d3-f1dafee1500e/CSCM/ODataV4/Company('CRONUS%20IN')`
+const API_BASE_URL = `https://api.businesscentral.dynamics.com/v2.0/ccc52638-bd4d-4b2c-a4d3-f1dafee1500e/CSCM/ODataV4/Company('CRONUS%20IN')`
+
+class UrlBuilder {
+  constructor(baseUrl) {
+    this.url = new URL(baseUrl)
+    this.customPath = this.url.pathname.split('/').filter(Boolean)
+    this.customSearchParams = new URLSearchParams(this.url.search)
+  }
+
+  addPath(...segments) {
+    this.customPath = this.customPath.concat(
+      segments.flatMap(segment => segment.split('/').filter(Boolean))
+    )
+    return this
+  }
+
+  addSearchParams(params) {
+    for (const [key, value] of Object.entries(params)) {
+      this.customSearchParams.append(key, value)
+    }
+    return this
+  }
+
+  toString() {
+    const fullPath = '/' + this.customPath.join('/')
+    const searchString = this.customSearchParams.toString()
+    const searchPart = searchString ? `?${searchString}` : ''
+    return this.url.origin + fullPath + searchPart
+  }
+}
 
 class APIClient {
   clientId: string
@@ -51,24 +79,30 @@ class APIClient {
     return this.token
   }
 
-  async request(method: string, queryParams: Record<string, string> | string = {}, body = null): Promise<any> {
-    const token = await this.getToken()
-    let url = `${API_BASE_URL}`;
-
+  getURL(queryParams: Record<string, string> | string | null) {
+    let url = `${API_BASE_URL}`
     if (typeof queryParams === 'string') {
       // If queryParams is a string, append it directly to the URL
       if (queryParams) {
-        url += `${queryParams}`;
+        const urlBuilder = new UrlBuilder(url)
+        url = urlBuilder.addPath(queryParams).toString()
       }
-    } else {
+    } else if (typeof queryParams === 'object' && queryParams !== null) {
       // If queryParams is a Record, construct the query string
-      const urlObject = new URL(url);
-      Object.keys(queryParams).forEach(key => {
-        urlObject.searchParams.append(key, queryParams[key]);
-      });
-      url = urlObject.toString();
+      const urlBuilder = new UrlBuilder(url)
+      urlBuilder.addSearchParams(queryParams)
+      url = urlObject.toString()
     }
+    return url
+  }
 
+  async request(
+    method: string,
+    queryParams: Record<string, string> | string = {},
+    body = null
+  ): Promise<any> {
+    const token = await this.getToken()
+    let url = this.getURL(queryParams)
     console.log(`[CampusAssistant] Call CorpoServe API: ${url}`)
 
     try {
@@ -87,7 +121,9 @@ class APIClient {
           this.token = null
           return this.request(method, queryParams)
         }
-        throw new Error(`[CampusAssistant] API call failed: ${response.status}. ${response.statusText}`)
+        throw new Error(
+          `[CampusAssistant] API call failed: ${response.status}. ${response.statusText}`
+        )
       }
 
       return response.json()
@@ -102,4 +138,4 @@ class APIClient {
   }
 }
 
-export default APIClient;
+export default APIClient
