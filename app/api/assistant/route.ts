@@ -3,7 +3,10 @@ import { AssistantResponse } from 'ai'
 import OpenAI from 'openai'
 import APIClient from '../api_client'
 import { AssistantStream } from 'openai/lib/AssistantStream'
-import { CorporateServeUserType, VALID_CORPORATE_SERVE_USER_TYPES } from 'lib/types'
+import {
+  CorporateServeUserType,
+  VALID_CORPORATE_SERVE_USER_TYPES
+} from 'lib/types'
 
 // dummy comment for commit
 
@@ -21,12 +24,14 @@ const corpoAPIClient = new APIClient(
   process.env.SCOPE || ''
 )
 
-const USER_FACING_ERROR_MESSAGE = "I'm sorry, I'm having trouble helping you at the moment. Please try again later!";
+const USER_FACING_ERROR_MESSAGE =
+  "I'm sorry, I'm having trouble helping you at the moment. Please try again later!"
 
-async function callCorpoAPI(oDataQuery: string): Promise<any> {
+async function callCorpoAPI(query: string): Promise<any> {
   try {
     console.time('[CampusAssistant] Corposerve API call latency')
-    const corpoResponse = await corpoAPIClient.fetchData(oDataQuery)
+    const corpoResponse = await corpoAPIClient.fetchData(query)
+    //const corpoResponse = await corpoAPIClient.fetchSQLData(query)
     console.timeEnd('[CampusAssistant] Corposerve API call latency')
 
     return JSON.stringify(corpoResponse)
@@ -36,10 +41,13 @@ async function callCorpoAPI(oDataQuery: string): Promise<any> {
   }
 }
 
-function constructUserInstructions(userType: CorporateServeUserType, userID: string | null): string {
+function constructUserInstructions(
+  userType: CorporateServeUserType,
+  userID: string | null
+): string {
   const userTypeUppercase = userType.toUpperCase()
   if (!userID) {
-    return ""
+    return ''
   }
 
   return `\n
@@ -51,19 +59,21 @@ export async function POST(req: Request) {
   // Parse the request body
   const input: {
     threadId: string | null
-    message: string,
+    message: string
     data: {
-      userType?: CorporateServeUserType | null,
+      userType?: CorporateServeUserType | null
       userID?: string | null
     }
   } = await req.json()
   console.log(`[CampusAssistant] User message: ${input.message}`)
 
   // not doing any validation here for now; we should add it when we have more than one user type
-  let userType: CorporateServeUserType = input.data.userType || "student"
+  let userType: CorporateServeUserType = input.data.userType || 'student'
   const userID = input.data.userID || null
   console.log(`[CampusAssistant] UserType: ${userType} UserID: ${userID}`)
-    
+
+  console.log(`[CampusAssistant] input threadId: ${input.threadId}`)
+
   // Create a thread if needed
   const threadId = input.threadId ?? (await openai.beta.threads.create({})).id
 
@@ -83,7 +93,7 @@ export async function POST(req: Request) {
       console.log(`[CampusAssistant] Running assistant for thread ${threadId}`)
 
       const sendErrorMessage = (message: string) => {
-        console.log("[CampusAssistant] Sending error message to the user.")
+        console.log('[CampusAssistant] Sending error message to the user.')
         sendMessage({
           id: createdMessage.id,
           role: 'assistant',
@@ -98,7 +108,7 @@ export async function POST(req: Request) {
         })
       }
 
-      let runStream: AssistantStream;
+      let runStream: AssistantStream
       try {
         runStream = openai.beta.threads.runs.stream(
           threadId,
@@ -113,7 +123,7 @@ export async function POST(req: Request) {
           { signal: req.signal }
         )
       } catch (error) {
-        console.log("[CampusAssistant] Error while creating run stream:", error)
+        console.log('[CampusAssistant] Error while creating run stream:', error)
         sendErrorMessage(USER_FACING_ERROR_MESSAGE)
         return
       }
@@ -159,9 +169,7 @@ export async function POST(req: Request) {
               availableFunctions
             )}`
           } else {
-            const functionResponse = await functionToCall(
-              parameters.odata_query
-            )
+            const functionResponse = await functionToCall(parameters.query)
             outputString = functionResponse
           }
 
