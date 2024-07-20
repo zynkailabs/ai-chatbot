@@ -30,8 +30,8 @@ const USER_FACING_ERROR_MESSAGE =
 async function callCorpoAPI(query: string): Promise<any> {
   try {
     console.time('[CampusAssistant] Corposerve API call latency')
-    const corpoResponse = await corpoAPIClient.fetchData(query)
-    //const corpoResponse = await corpoAPIClient.fetchSQLData(query)
+    //const corpoResponse = await corpoAPIClient.fetchData(query)
+    const corpoResponse = await corpoAPIClient.fetchSQLData(query)
     console.timeEnd('[CampusAssistant] Corposerve API call latency')
 
     return JSON.stringify(corpoResponse)
