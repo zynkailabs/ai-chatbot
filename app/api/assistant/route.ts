@@ -2,6 +2,7 @@ import 'server-only'
 import { AssistantResponse } from 'ai'
 import OpenAI from 'openai'
 import APIClient from '../api_client'
+import DummyFunctionsClient from '../dummy_functions'
 import { AssistantStream } from 'openai/lib/AssistantStream'
 import {
   CorporateServeUserType,
@@ -24,6 +25,8 @@ const corpoAPIClient = new APIClient(
   process.env.SCOPE || ''
 )
 
+const dummyFuncClient = new DummyFunctionsClient()
+
 const USER_FACING_ERROR_MESSAGE =
   "I'm sorry, I'm having trouble helping you at the moment. Please try again later!"
 
@@ -35,6 +38,143 @@ async function callCorpoAPI(query: string): Promise<any> {
     console.timeEnd('[CampusAssistant] Corposerve API call latency')
 
     return JSON.stringify(corpoResponse)
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function getFoodMenu(): Promise<any> {
+  try {
+    console.log('[CampusAssistant] Dummy API call getFoodMenu')
+    const response = await dummyFuncClient.getFoodMenu()
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function getOfficeHours(): Promise<any> {
+  try {
+    console.log('[CampusAssistant] Dummy API call getOfficeHours')
+    const response = await dummyFuncClient.getOfficeHours()
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function getUniversityPolicy(): Promise<any> {
+  try {
+    console.log('[CampusAssistant] Dummy API call getUniversityPolicy')
+    const response = await dummyFuncClient.getUniversityPolicy()
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function getSubjectPrerequisites(): Promise<any> {
+  try {
+    console.log('[CampusAssistant] Dummy API call getSubjectPrerequisites')
+    const response = await dummyFuncClient.getSubjectPrerequisites()
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function getSpecializationRequirements(): Promise<any> {
+  try {
+    console.log(
+      '[CampusAssistant] Dummy API call getSpecializationRequirements'
+    )
+    const response = await dummyFuncClient.getSpecializationRequirements()
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function getUniversitySchedule(): Promise<any> {
+  try {
+    console.log('[CampusAssistant] Dummy API call getUniversitySchedule')
+    const response = await dummyFuncClient.getUniversitySchedule()
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function getClassSchedule(): Promise<any> {
+  try {
+    console.log('[CampusAssistant] Dummy API call getClassSchedule')
+    const response = await dummyFuncClient.getClassSchedule()
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function getHousingAvailability(): Promise<any> {
+  try {
+    console.log('[CampusAssistant] Dummy API call getHousingAvailability')
+    const response = await dummyFuncClient.getHousingAvailability()
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function createLeaveApplication(
+  start_date: string,
+  end_date: string
+): Promise<any> {
+  try {
+    console.time('[CampusAssistant] Dummy API call createLeaveApplication')
+    const response = await dummyFuncClient.createLeaveApplication(
+      start_date,
+      end_date
+    )
+    console.timeEnd('[CampusAssistant] Dummy API call createLeaveApplication')
+
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function createHousingIssueApplication(issue: string): Promise<any> {
+  try {
+    console.time(
+      '[CampusAssistant] Dummy API call createHousingIssueApplication'
+    )
+    const response = await dummyFuncClient.createHousingIssueApplication(issue)
+    console.timeEnd(
+      '[CampusAssistant] Dummy API call createHousingIssueApplication'
+    )
+
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function trackTicketStatus(ticket_number: string): Promise<any> {
+  try {
+    console.log('[CampusAssistant] Dummy API call trackTicketStatus')
+    const response = await dummyFuncClient.trackTicketStatus(ticket_number)
+    return response
   } catch (error) {
     console.error('API request failed:', error)
     return 'there was an error running the query'
@@ -154,14 +294,29 @@ export async function POST(req: Request) {
 
         const toolOutputs = []
         const availableFunctions: { [key: string]: Function } = {
-          access_data: callCorpoAPI
+          access_data: callCorpoAPI,
+          get_food_menu: getFoodMenu,
+          get_office_hours: getOfficeHours,
+          get_university_policy: getUniversityPolicy,
+          get_subject_prerequisites: getSubjectPrerequisites,
+          get_specialization_requirements: getSpecializationRequirements,
+          track_ticket_status: trackTicketStatus,
+          apply_leave: createLeaveApplication,
+          get_university_schedule: getUniversitySchedule,
+          get_class_schedule: getClassSchedule,
+          get_housing_availability: getHousingAvailability,
+          apply_housing_issue: createHousingIssueApplication
         }
 
+        console.log(availableFunctions)
         for (const toolCall of toolCalls) {
           const functionName = toolCall.function.name
           const parameters = JSON.parse(toolCall.function.arguments)
           const functionToCall = availableFunctions[functionName]
 
+          console.log(
+            `[CampusAssistant] Calling function ${functionName} with parameters ${parameters}`
+          )
           let outputString = null
           if (!functionToCall) {
             console.log(`[CampusAssistant] Unknown function: ${functionName}`)
@@ -169,8 +324,27 @@ export async function POST(req: Request) {
               availableFunctions
             )}`
           } else {
-            const functionResponse = await functionToCall(parameters.query)
-            outputString = functionResponse
+            if (functionName === 'access_data') {
+              const functionResponse = await functionToCall(parameters.query)
+              outputString = functionResponse
+            } else if (functionName === 'apply_leave') {
+              const functionResponse = await functionToCall(
+                parameters.start_date,
+                parameters.end_date
+              )
+              outputString = functionResponse
+            } else if (functionName === 'apply_housing_issue') {
+              const functionResponse = await functionToCall(parameters.issue)
+              outputString = functionResponse
+            } else if (functionName === 'track_ticket_status') {
+              const functionResponse = await functionToCall(
+                parameters.ticket_number
+              )
+              outputString = functionResponse
+            } else {
+              const functionResponse = await functionToCall()
+              outputString = functionResponse
+            }
           }
 
           console.log(
