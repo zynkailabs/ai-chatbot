@@ -101,11 +101,67 @@ async function getSpecializationRequirements(): Promise<any> {
   }
 }
 
-async function applyLeave(start_date: string, end_date: string): Promise<any> {
+async function getUniversitySchedule(): Promise<any> {
   try {
-    console.time('[CampusAssistant] Dummy API call apply_leave')
-    const response = await dummyFuncClient.applyLeave(start_date, end_date)
-    console.timeEnd('[CampusAssistant] Dummy API call latency')
+    console.log('[CampusAssistant] Dummy API call getUniversitySchedule')
+    const response = await dummyFuncClient.getUniversitySchedule()
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function getClassSchedule(): Promise<any> {
+  try {
+    console.log('[CampusAssistant] Dummy API call getClassSchedule')
+    const response = await dummyFuncClient.getClassSchedule()
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function getHousingAvailability(): Promise<any> {
+  try {
+    console.log('[CampusAssistant] Dummy API call getHousingAvailability')
+    const response = await dummyFuncClient.getHousingAvailability()
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function createLeaveApplication(
+  start_date: string,
+  end_date: string
+): Promise<any> {
+  try {
+    console.time('[CampusAssistant] Dummy API call createLeaveApplication')
+    const response = await dummyFuncClient.createLeaveApplication(
+      start_date,
+      end_date
+    )
+    console.timeEnd('[CampusAssistant] Dummy API call createLeaveApplication')
+
+    return response
+  } catch (error) {
+    console.error('API request failed:', error)
+    return 'there was an error running the query'
+  }
+}
+
+async function createHousingIssueApplication(issue: string): Promise<any> {
+  try {
+    console.time(
+      '[CampusAssistant] Dummy API call createHousingIssueApplication'
+    )
+    const response = await dummyFuncClient.createHousingIssueApplication(issue)
+    console.timeEnd(
+      '[CampusAssistant] Dummy API call createHousingIssueApplication'
+    )
 
     return response
   } catch (error) {
@@ -245,7 +301,11 @@ export async function POST(req: Request) {
           get_subject_prerequisites: getSubjectPrerequisites,
           get_specialization_requirements: getSpecializationRequirements,
           track_ticket_status: trackTicketStatus,
-          apply_leave: applyLeave
+          apply_leave: createLeaveApplication,
+          get_university_schedule: getUniversitySchedule,
+          get_class_schedule: getClassSchedule,
+          get_housing_availability: getHousingAvailability,
+          apply_housing_issue: createHousingIssueApplication
         }
 
         console.log(availableFunctions)
@@ -272,6 +332,9 @@ export async function POST(req: Request) {
                 parameters.start_date,
                 parameters.end_date
               )
+              outputString = functionResponse
+            } else if (functionName === 'apply_housing_issue') {
+              const functionResponse = await functionToCall(parameters.issue)
               outputString = functionResponse
             } else if (functionName === 'track_ticket_status') {
               const functionResponse = await functionToCall(
