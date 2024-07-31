@@ -328,7 +328,6 @@ export async function POST(req: Request) {
             const functionResponse = await executeToolCall(functionName, parameters)
             outputString = functionResponse
           }
-
           console.log(
             `[CampusAssistant] Response for function ${functionName} with arguments: ${parameters} => ${outputString}`
           )

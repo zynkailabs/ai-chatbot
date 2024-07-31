@@ -14,7 +14,7 @@ const toolFunctions: Record<string, ToolFunction> = {
   access_data: async (query: string): Promise<any> => {
     try {
       console.time('[CampusAssistant] Corposerve API call latency')
-      //const corpoResponse = await corpoAPIClient.fetchData(query)
+      // const corpoResponse = await corpoAPIClient.fetchData(query)
       const corpoResponse = await corpoAPIClient.fetchSQLData(query)
       console.timeEnd('[CampusAssistant] Corposerve API call latency')
 
@@ -123,21 +123,44 @@ function validateParameters(
 export async function executeToolCall(
   functionName: string,
   parameters: ToolParameters
-): Promise<any> {
+): Promise<string> {
   console.log('Executing tool call: ', functionName)
-  // Check if the function exists
-  if (!(functionName in toolFunctions)) {
-    throw new Error(`Function "${functionName}" is not registered.`)
+
+  try {
+    // Check if the function exists
+    if (!(functionName in toolFunctions)) {
+      throw new Error(`Function "${functionName}" is not registered.`)
+    }
+
+    const func = toolFunctions[functionName]
+
+    // Get the expected parameters for the function
+    const expectedParams = getExpectedParams(func)
+
+    // Validate parameters
+    validateParameters(functionName, parameters, expectedParams)
+
+    // Call the function with the provided parameters
+    const result = await func(...Object.values(parameters))
+
+    // Check if the result is already a string
+    if (typeof result === 'string') {
+      return result
+    }
+
+    // If it's not a string, stringify the result before returning
+    return JSON.stringify(result)
+  } catch (error) {
+    console.error(`Error in executeToolCall for function "${functionName}":`, error)
+
+    // Create an error response object
+    const errorResponse = {
+      error: true,
+      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      functionName: functionName
+    }
+
+    // Return the stringified error response
+    return JSON.stringify(errorResponse)
   }
-
-  const func = toolFunctions[functionName]
-
-  // Get the expected parameters for the function
-  const expectedParams = getExpectedParams(func)
-
-  // Validate parameters
-  validateParameters(functionName, parameters, expectedParams)
-
-  // Call the function with the provided parameters
-  return await func(...Object.values(parameters))
 }
