@@ -8,6 +8,7 @@ import {
   CorporateServeUserType,
   VALID_CORPORATE_SERVE_USER_TYPES
 } from 'lib/types'
+import { executeToolCall } from '../ToolCallExecutor'
 
 // dummy comment for commit
 
@@ -324,27 +325,8 @@ export async function POST(req: Request) {
               availableFunctions
             )}`
           } else {
-            if (functionName === 'access_data') {
-              const functionResponse = await functionToCall(parameters.query)
-              outputString = functionResponse
-            } else if (functionName === 'apply_leave') {
-              const functionResponse = await functionToCall(
-                parameters.start_date,
-                parameters.end_date
-              )
-              outputString = functionResponse
-            } else if (functionName === 'apply_housing_issue') {
-              const functionResponse = await functionToCall(parameters.issue)
-              outputString = functionResponse
-            } else if (functionName === 'track_ticket_status') {
-              const functionResponse = await functionToCall(
-                parameters.ticket_number
-              )
-              outputString = functionResponse
-            } else {
-              const functionResponse = await functionToCall()
-              outputString = functionResponse
-            }
+            const functionResponse = await executeToolCall(functionName, parameters)
+            outputString = functionResponse
           }
 
           console.log(
