@@ -1,4 +1,6 @@
 import APIClient from './api_client'
+import dummyDataJson from './dummy_functions_data.json'
+import { DummyData } from './dummy-data.ts'
 
 // Define types for our functions and parameters
 type ToolFunction = (...args: any[]) => Promise<any>
@@ -9,6 +11,8 @@ const corpoAPIClient = new APIClient(
   process.env.CLIENT_SECRET || '',
   process.env.SCOPE || ''
 )
+
+const dummyData: DummyData = dummyDataJson
 
 const toolFunctions: Record<string, ToolFunction> = {
   access_data: async (query: string): Promise<any> => {
@@ -24,13 +28,23 @@ const toolFunctions: Record<string, ToolFunction> = {
       return 'there was an error running the query'
     }
   },
-  get_food_menu: async (date?: string): Promise<any> => {
-    console.log(`Getting food menu for date: ${date || 'today'}`)
-    return { menu: ['Item 1', 'Item 2', 'Item 3'] }
+  get_food_menu: async (): Promise<any> => {
+    const menu = dummyData['Food_Menu']
+    const dayNames = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday'
+    ]
+    let today = new Date()
+    let day = dayNames[today.getDay()]
+    return JSON.stringify(menu[day])
   },
-  get_office_hours: async (department?: string): Promise<any> => {
-    console.log(`Getting office hours for department: ${department || 'all'}`)
-    return { hours: '9 AM - 5 PM', days: 'Monday - Friday' }
+  get_office_hours: async (): Promise<any> => {
+    return dummyData['Office_Hours']
   },
   get_university_policy: async (policyName: string): Promise<any> => {
     console.log(`Getting university policy: ${policyName}`)
@@ -51,9 +65,21 @@ const toolFunctions: Record<string, ToolFunction> = {
       requirements: ['Course A', 'Course B', 'Project C']
     }
   },
-  track_ticket_status: async (ticketId: string): Promise<any> => {
-    console.log(`Tracking status for ticket: ${ticketId}`)
-    return { ticketId, status: 'In Progress', lastUpdated: '2023-07-30' }
+  track_ticket_status: async (ticket_number: string): Promise<any> => {
+    let num = Number(ticket_number.slice(1))
+    if (ticket_number.startsWith('A') || ticket_number.startsWith('H')) {
+      let request_type = 'Leave Application'
+      if (ticket_number.startsWith('H')) {
+        request_type = 'Kitchen Sink repair'
+      }
+      if (num % 2 == 0) {
+        return `Request for ${request_type} with ticket number ${ticket_number} has been approved.`
+      } else {
+        return `Request for ${request_type} with ticket number ${ticket_number} is in progress.`
+      }
+    } else {
+      return `Invalid ticket. Please provide a valid ticket number. Housing related tickets start with 'H' and all other administrative tickets start with 'A'`
+    }
   },
   apply_leave: async (
     startDate: string,
@@ -151,12 +177,16 @@ export async function executeToolCall(
     // If it's not a string, stringify the result before returning
     return JSON.stringify(result)
   } catch (error) {
-    console.error(`Error in executeToolCall for function "${functionName}":`, error)
+    console.error(
+      `Error in executeToolCall for function "${functionName}":`,
+      error
+    )
 
     // Create an error response object
     const errorResponse = {
       error: true,
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message:
+        error instanceof Error ? error.message : 'An unknown error occurred',
       functionName: functionName
     }
 
