@@ -117,8 +117,11 @@ const toolFunctions: Record<string, ToolFunction> = {
 }
 
 function getExpectedParams(func: ToolFunction): string[] {
+  console.log('getExpectedParams function called')
   const funcStr = func.toString()
+  console.log(`funcStr: ${funcStr}`)
   const argsStr = funcStr.slice(funcStr.indexOf('(') + 1, funcStr.indexOf(')'))
+  console.log(`argsStr: ${argsStr}`)
   return argsStr
     .split(',')
     .map(arg => arg.trim())
@@ -131,8 +134,11 @@ function validateParameters(
   providedParams: ToolParameters,
   expectedParams: string[]
 ): void {
+  // log all the provided parameters
+  console.log(`Provided parameters for ${functionName}: ${JSON.stringify(providedParams)} and expectedParams: ${expectedParams}`)
   const providedKeys = Object.keys(providedParams)
 
+  console.log(`providedKeys = ${providedKeys}`)
   // Check for missing parameters
   const missingParams = expectedParams.filter(
     param => !providedKeys.includes(param)
