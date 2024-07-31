@@ -3,7 +3,10 @@ import APIClient from './api_client'
 import { DummyData, dummyDataJson } from './DummyData'
 
 // Define types for our functions and parameters
-type ToolFunction = (...args: any[]) => Promise<any>
+type ToolFunction = {
+  func: (...args: any[]) => Promise<any>;
+  params: string[];
+}
 type ToolParameters = Record<string, any>
 
 const corpoAPIClient = new APIClient(
@@ -19,113 +22,137 @@ function getRandomNumberBetween(min: number, max: number) {
 const dummyData: DummyData = dummyDataJson
 
 const toolFunctions: Record<string, ToolFunction> = {
-  access_data: async (query: string): Promise<any> => {
-    try {
-      console.time('[CampusAssistant] Corposerve API call latency')
-      // const corpoResponse = await corpoAPIClient.fetchData(query)
-      const corpoResponse = await corpoAPIClient.fetchSQLData(query)
-      console.timeEnd('[CampusAssistant] Corposerve API call latency')
+  access_data: {
+    func: async (query: string): Promise<any> => {
+      try {
+        console.time('[CampusAssistant] Corposerve API call latency')
+        // const corpoResponse = await corpoAPIClient.fetchData(query)
+        const corpoResponse = await corpoAPIClient.fetchSQLData(query)
+        console.timeEnd('[CampusAssistant] Corposerve API call latency')
 
-      return JSON.stringify(corpoResponse)
-    } catch (error) {
-      console.error('API request failed:', error)
-      return 'there was an error running the query'
-    }
-  },
-  get_food_menu: async (): Promise<any> => {
-    const menu = dummyData['Food_Menu']
-    const dayNames = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday'
-    ]
-    let today = new Date()
-    let day = dayNames[today.getDay()]
-    return JSON.stringify(menu[day])
-  },
-  get_office_hours: async (): Promise<any> => {
-    return dummyData['Office_Hours']
-  },
-  get_university_policy: async (): Promise<any> => {
-    return dummyData['University_Policy']
-  },
-  get_subject_prerequisites: async (): Promise<any> => {
-    return dummyData['Subject_Prerequisites']
-  },
-  get_specialization_requirements: async (): Promise<any> => {
-    return dummyData['Specialization_Requirements']
-  },
-  track_ticket_status: async (ticket_number: string): Promise<any> => {
-    let num = Number(ticket_number.slice(1))
-    if (ticket_number.startsWith('A') || ticket_number.startsWith('H')) {
-      let request_type = 'Leave Application'
-      if (ticket_number.startsWith('H')) {
-        request_type = 'Kitchen Sink repair'
+        return JSON.stringify(corpoResponse)
+      } catch (error) {
+        console.error('API request failed:', error)
+        return 'there was an error running the query'
       }
-      if (num % 2 == 0) {
-        return `Request for ${request_type} with ticket number ${ticket_number} has been approved.`
+    },
+    params: ['query']
+  },
+  get_food_menu: {
+    func: async (): Promise<any> => {
+      const menu = dummyData['Food_Menu']
+      const dayNames = [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday'
+      ]
+      let today = new Date()
+      let day = dayNames[today.getDay()]
+      return JSON.stringify(menu[day])
+    },
+    params: []
+  },
+  get_office_hours: {
+    func: async (): Promise<any> => {
+      return dummyData['Office_Hours']
+    },
+    params: []
+  },
+  get_university_policy: {
+    func: async (): Promise<any> => {
+      return dummyData['University_Policy']
+    },
+    params: []
+  },
+  get_subject_prerequisites: {
+    func: async (): Promise<any> => {
+      return dummyData['Subject_Prerequisites']
+    },
+    params: []
+  },
+  get_specialization_requirements: {
+    func: async (): Promise<any> => {
+      return dummyData['Specialization_Requirements']
+    },
+    params: []
+  },
+  track_ticket_status: {
+    func: async (ticket_number: string): Promise<any> => {
+      let num = Number(ticket_number.slice(1))
+      if (ticket_number.startsWith('A') || ticket_number.startsWith('H')) {
+        let request_type = 'Leave Application'
+        if (ticket_number.startsWith('H')) {
+          request_type = 'Kitchen Sink repair'
+        }
+        if (num % 2 == 0) {
+          return `Request for ${request_type} with ticket number ${ticket_number} has been approved.`
+        } else {
+          return `Request for ${request_type} with ticket number ${ticket_number} is in progress.`
+        }
       } else {
-        return `Request for ${request_type} with ticket number ${ticket_number} is in progress.`
+        return `Invalid ticket. Please provide a valid ticket number. Housing related tickets start with 'H' and all other administrative tickets start with 'A'`
       }
-    } else {
-      return `Invalid ticket. Please provide a valid ticket number. Housing related tickets start with 'H' and all other administrative tickets start with 'A'`
-    }
+    },
+    params: ['ticket_number']
   },
-  apply_leave: async (start_date: string, end_date: string): Promise<any> => {
-    let start = new Date(start_date)
-    let end = new Date(end_date)
-    let diff = Math.abs(end.getTime() - start.getTime())
-    let days = Math.ceil(diff / (1000 * 60 * 60 * 24))
+  apply_leave: {
+    func: async (start_date: string, end_date: string): Promise<any> => {
+      let start = new Date(start_date)
+      let end = new Date(end_date)
+      let diff = Math.abs(end.getTime() - start.getTime())
+      let days = Math.ceil(diff / (1000 * 60 * 60 * 24))
 
-    let application_number = getRandomNumberBetween(1000000, 9999999)
-    if (application_number % 2 == 0) {
-      //generated number is even
-      if (application_number == 9999999) {
-        application_number = application_number - 1
-      } else {
-        application_number = application_number + 1
+      let application_number = getRandomNumberBetween(1000000, 9999999)
+      if (application_number % 2 == 0) {
+        //generated number is even
+        if (application_number == 9999999) {
+          application_number = application_number - 1
+        } else {
+          application_number = application_number + 1
+        }
       }
-    }
-    return `Your leave application for ${days} days starting from ${start_date} to ${end_date} has been submitted successfully. Please use the issue ticket number A${application_number} for future reference and tracking.`
+      return `Your leave application for ${days} days starting from ${start_date} to ${end_date} has been submitted successfully. Please use the issue ticket number A${application_number} for future reference and tracking.`
+    },
+    params: ['start_date', 'end_date']
   },
-  get_university_schedule: async (): Promise<any> => {
-    return dummyData['University_Schedule']
+  get_university_schedule: {
+    func: async (): Promise<any> => {
+      return dummyData['University_Schedule']
+    },
+    params: []
   },
-  get_class_schedule: async (): Promise<any> => {
-    return dummyData['Class_Schedule']
+  get_class_schedule: {
+    func: async (): Promise<any> => {
+      return dummyData['Class_Schedule']
+    },
+    params: []
   },
-  get_housing_availability: async (): Promise<any> => {
-    return dummyData['Housing_Availability']
+  get_housing_availability: {
+    func: async (): Promise<any> => {
+      return dummyData['Housing_Availability']
+    },
+    params: []
   },
-  apply_housing_issue: async (issue: string): Promise<any> => {
-    let application_number = getRandomNumberBetween(1000000, 9999999)
-    console.log(application_number)
-    if (application_number % 2 == 0) {
-      //generated number is even
-      if (application_number == 9999999) {
-        application_number = application_number - 1
-      } else {
-        application_number = application_number + 1
+  apply_housing_issue: {
+    func: async (issue: string): Promise<any> => {
+      let application_number = getRandomNumberBetween(1000000, 9999999)
+      console.log(application_number)
+      if (application_number % 2 == 0) {
+        //generated number is even
+        if (application_number == 9999999) {
+          application_number = application_number - 1
+        } else {
+          application_number = application_number + 1
+        }
       }
-    }
-    return `Your application for ${issue} has been submitted successfully. Please use the issue ticket number H${application_number} for future reference and tracking. For more details, please contact Residential Services Center for further assistance regarding your application request.`
+      return `Your application for ${issue} has been submitted successfully. Please use the issue ticket number H${application_number} for future reference and tracking. For more details, please contact Residential Services Center for further assistance regarding your application request.`
+    },
+    params: ['issue']
   }
-}
-
-function getExpectedParams(func: ToolFunction): string[] {
-  console.log('getExpectedParams function called')
-  const funcStr = func.toString()
-  console.log(`funcStr: ${funcStr}`)
-  const argsStr = funcStr.slice(funcStr.indexOf('(') + 1, funcStr.indexOf(')'))
-  console.log(`argsStr: ${argsStr}`)
-  return argsStr
-    .split(',')
-    .map(arg => arg.trim())
-    .filter(arg => arg !== '')
 }
 
 // Helper function to validate parameters
@@ -171,10 +198,7 @@ export async function executeToolCall(
       throw new Error(`Function "${functionName}" is not registered.`)
     }
 
-    const func = toolFunctions[functionName]
-
-    // Get the expected parameters for the function
-    const expectedParams = getExpectedParams(func)
+    const { func, params: expectedParams } = toolFunctions[functionName]
 
     // Validate parameters
     validateParameters(functionName, parameters, expectedParams)
