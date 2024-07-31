@@ -50,10 +50,10 @@ const toolFunctions: Record<string, ToolFunction> = {
   get_office_hours: async (): Promise<any> => {
     return dummyData['Office_Hours']
   },
-  get_university_policy: async (policyName: string): Promise<any> => {
+  get_university_policy: async (): Promise<any> => {
     return dummyData['University_Policy']
   },
-  get_subject_prerequisites: async (subjectCode: string): Promise<any> => {
+  get_subject_prerequisites: async (): Promise<any> => {
     return dummyData['Subject_Prerequisites']
   },
   get_specialization_requirements: async (): Promise<any> => {
@@ -75,9 +75,9 @@ const toolFunctions: Record<string, ToolFunction> = {
       return `Invalid ticket. Please provide a valid ticket number. Housing related tickets start with 'H' and all other administrative tickets start with 'A'`
     }
   },
-  apply_leave: async (startDate: string, endDate: string): Promise<any> => {
-    let start = new Date(startDate)
-    let end = new Date(endDate)
+  apply_leave: async (start_date: string, end_date: string): Promise<any> => {
+    let start = new Date(start_date)
+    let end = new Date(end_date)
     let diff = Math.abs(end.getTime() - start.getTime())
     let days = Math.ceil(diff / (1000 * 60 * 60 * 24))
 
@@ -90,7 +90,7 @@ const toolFunctions: Record<string, ToolFunction> = {
         application_number = application_number + 1
       }
     }
-    return `Your leave application for ${days} days starting from ${startDate} to ${endDate} has been submitted successfully. Please use the issue ticket number A${application_number} for future reference and tracking.`
+    return `Your leave application for ${days} days starting from ${start_date} to ${end_date} has been submitted successfully. Please use the issue ticket number A${application_number} for future reference and tracking.`
   },
   get_university_schedule: async (): Promise<any> => {
     return dummyData['University_Schedule']
