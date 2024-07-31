@@ -12,6 +12,10 @@ const corpoAPIClient = new APIClient(
   process.env.SCOPE || ''
 )
 
+function getRandomNumberBetween(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min)) + min
+}
+
 const dummyData: DummyData = dummyDataJson
 
 const toolFunctions: Record<string, ToolFunction> = {
@@ -47,23 +51,13 @@ const toolFunctions: Record<string, ToolFunction> = {
     return dummyData['Office_Hours']
   },
   get_university_policy: async (policyName: string): Promise<any> => {
-    console.log(`Getting university policy: ${policyName}`)
-    return { policyName, content: 'Policy details...' }
+    return dummyData['University_Policy']
   },
   get_subject_prerequisites: async (subjectCode: string): Promise<any> => {
-    console.log(`Getting prerequisites for subject: ${subjectCode}`)
-    return { subjectCode, prerequisites: ['MATH101', 'ENG102'] }
+    return dummyData['Subject_Prerequisites']
   },
-  get_specialization_requirements: async (
-    specializationName: string
-  ): Promise<any> => {
-    console.log(
-      `Getting requirements for specialization: ${specializationName}`
-    )
-    return {
-      specializationName,
-      requirements: ['Course A', 'Course B', 'Project C']
-    }
+  get_specialization_requirements: async (): Promise<any> => {
+    return dummyData['Specialization_Requirements']
   },
   track_ticket_status: async (ticket_number: string): Promise<any> => {
     let num = Number(ticket_number.slice(1))
@@ -81,31 +75,44 @@ const toolFunctions: Record<string, ToolFunction> = {
       return `Invalid ticket. Please provide a valid ticket number. Housing related tickets start with 'H' and all other administrative tickets start with 'A'`
     }
   },
-  apply_leave: async (
-    startDate: string,
-    endDate: string,
-    reason: string
-  ): Promise<any> => {
-    console.log(`Applying for leave from ${startDate} to ${endDate}`)
-    return { success: true, leaveId: 'LEAVE123', status: 'Pending Approval' }
+  apply_leave: async (startDate: string, endDate: string): Promise<any> => {
+    let start = new Date(startDate)
+    let end = new Date(endDate)
+    let diff = Math.abs(end.getTime() - start.getTime())
+    let days = Math.ceil(diff / (1000 * 60 * 60 * 24))
+
+    let application_number = getRandomNumberBetween(1000000, 9999999)
+    if (application_number % 2 == 0) {
+      //generated number is even
+      if (application_number == 9999999) {
+        application_number = application_number - 1
+      } else {
+        application_number = application_number + 1
+      }
+    }
+    return `Your leave application for ${days} days starting from ${startDate} to ${endDate} has been submitted successfully. Please use the issue ticket number A${application_number} for future reference and tracking.`
   },
-  get_university_schedule: async (semester?: string): Promise<any> => {
-    console.log(
-      `Getting university schedule for semester: ${semester || 'current'}`
-    )
-    return { semester, events: ['Event 1', 'Event 2', 'Event 3'] }
+  get_university_schedule: async (): Promise<any> => {
+    return dummyData['University_Schedule']
   },
-  get_class_schedule: async (studentId: string): Promise<any> => {
-    console.log(`Getting class schedule for student: ${studentId}`)
-    return { studentId, schedule: ['Class A: Mon 9AM', 'Class B: Tue 2PM'] }
+  get_class_schedule: async (): Promise<any> => {
+    return dummyData['Class_Schedule']
   },
   get_housing_availability: async (): Promise<any> => {
-    console.log('Getting housing availability')
-    return { available: true, units: 5 }
+    return dummyData['Housing_Availability']
   },
   apply_housing_issue: async (issue: string): Promise<any> => {
-    console.log(`Creating housing issue application for: ${issue}`)
-    return { success: true, issueId: 'HOUSE123', status: 'Submitted' }
+    let application_number = getRandomNumberBetween(1000000, 9999999)
+    console.log(application_number)
+    if (application_number % 2 == 0) {
+      //generated number is even
+      if (application_number == 9999999) {
+        application_number = application_number - 1
+      } else {
+        application_number = application_number + 1
+      }
+    }
+    return `Your application for ${issue} has been submitted successfully. Please use the issue ticket number H${application_number} for future reference and tracking. For more details, please contact Residential Services Center for further assistance regarding your application request.`
   }
 }
 
