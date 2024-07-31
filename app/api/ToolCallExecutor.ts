@@ -1,6 +1,6 @@
 import APIClient from './api_client'
-import dummyDataJson from './dummy_functions_data.json'
-import { DummyData } from './dummy-data.ts'
+// import dummyDataJson from './dummy_functions_data.json'
+import { DummyData, dummyDataJson } from './DummyData'
 
 // Define types for our functions and parameters
 type ToolFunction = (...args: any[]) => Promise<any>
