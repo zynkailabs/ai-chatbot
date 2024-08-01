@@ -6,7 +6,7 @@ import { Database } from '@/lib/db_types'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { type Chat } from '@/lib/types'
+import { type Chat, type CustomClientConfig } from '@/lib/types'
 
 export async function getChats(userId?: string | null) {
   if (!userId) {
@@ -110,4 +110,33 @@ export async function shareChat(chat: Chat) {
     .throwOnError()
 
   return payload
+}
+
+export async function getCustomClientConfig(
+  clientId: string
+): Promise<CustomClientConfig> {
+  // // Fetch configuration from your API route
+  // const response = await fetch(
+  //   `${process.env.NEXT_PUBLIC_API_URL}/api/config?clientId=${clientId}`
+  // )
+  // if (!response.ok) {
+  //   throw new Error('Failed to fetch client config')
+  // }
+  // return response.json()
+  switch (clientId) {
+    case 'corposerve':
+      return {
+        clientId: 'corposerve',
+        colors: {
+          background: '88, 77%, 78%'
+        }
+      }
+    default:
+      return {
+        clientId: 'default',
+        colors: {
+          background: '0 0% 100%'
+        }
+      }
+  }
 }
