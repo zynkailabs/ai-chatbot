@@ -24,7 +24,7 @@ module.exports = {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         corpoBackground: 'hsl(var(--corpo-background))',
-        corpoHeaderBackground: 'hsl(var(--corpo-header-background))',
+        headerBackground: 'hsl(var(--header-background))',
         corpoChatPanelBackground: 'hsl(var(--corpo-chatpanel-background))',
         corpoChatPanelText: 'hsl(var(--corpo-chatpanel-text))',
         primary: {
