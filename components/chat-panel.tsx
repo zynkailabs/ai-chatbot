@@ -34,7 +34,7 @@ export function ChatPanel({
   const userType = additionalData?.userType
   const userID = additionalData?.userID
   return (
-    <div className="fixed inset-x-0 bottom-0 bg-corpoBackground">
+    <div className="fixed inset-x-0 bottom-0 bg-background">
       {/* <ButtonScrollToBottom /> */}
       <div className="mx-auto sm:max-w-2xl sm:px-4">
         {/* <div className="flex h-10 items-center justify-center">

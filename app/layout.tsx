@@ -56,7 +56,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <div className="flex min-h-screen flex-col">
             {/* @ts-ignore */}
             <ImageHeader />
-            <main className="flex flex-1 flex-col bg-corpoBackground">
+            <main className="flex flex-1 flex-col bg-background">
               {children}
             </main>
           </div>

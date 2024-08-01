@@ -23,7 +23,6 @@ module.exports = {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-        corpoBackground: 'hsl(var(--corpo-background))',
         headerBackground: 'hsl(var(--header-background))',
         userInputArea: 'hsl(var(--user-input-area))',
         userInputText: 'hsl(var(--user-input-text))',
