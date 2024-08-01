@@ -13,7 +13,6 @@ export function CustomClientConfigProvider({
   config: CustomClientConfig
 }) {
   React.useEffect(() => {
-    console.log(`Updating colors with config: ${JSON.stringify(config)}`)
     // Apply any global configurations here
     if (config.colors.background) {
       document.documentElement.style.setProperty(
