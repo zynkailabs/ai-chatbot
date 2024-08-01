@@ -10,6 +10,7 @@ import { Providers } from '@/components/providers'
 import { EmptyHeader } from '@/components/empty-header'
 import { TextHeader } from '@/components/text-header'
 import { ImageHeader } from '@/components/image-header'
+import { getCustomClientConfig } from '@/app/actions'
 
 export const metadata: Metadata = {
   title: {
@@ -32,7 +33,9 @@ interface RootLayoutProps {
   children: React.ReactNode
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const clientId = 'corposerve'
+  const config = await getCustomClientConfig(clientId)
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
@@ -44,7 +47,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
         )}
       >
         <Toaster />
-        <Providers attribute="class" defaultTheme="system" enableSystem>
+        <Providers
+          config={config}
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+        >
           <div className="flex min-h-screen flex-col">
             {/* @ts-ignore */}
             <ImageHeader />
