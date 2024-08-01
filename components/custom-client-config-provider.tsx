@@ -12,22 +12,6 @@ export function CustomClientConfigProvider({
   children: ReactNode
   config: CustomClientConfig
 }) {
-  React.useEffect(() => {
-    // Apply any global configurations here
-    if (config.colors.background) {
-      document.documentElement.style.setProperty(
-        '--background',
-        config.colors.background
-      )
-    }
-    if (config.colors.headerBackground) {
-      document.documentElement.style.setProperty(
-        '--background',
-        config.colors.background
-      )
-    }
-  }, [config])
-
   return (
     <CustomClientConfigContext.Provider value={config}>
       {children}
