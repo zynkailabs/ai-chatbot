@@ -124,19 +124,20 @@ export async function getCustomClientConfig(
   // }
   // return response.json()
   switch (clientId) {
-    case 'corposerve':
+    case 'aman-ritiz':
       return {
-        clientId: 'corposerve',
+        clientId: 'default',
         colors: {
-          background: '199.1 38.8% 42.9%',
+          background: '0 0% 100%',
           headerBackground: '205.1 54.5% 80.2%'
         }
       }
     default:
       return {
-        clientId: 'default',
+        clientId: 'corposerve',
         colors: {
-          background: '0 0% 100%'
+          background: '199.1 38.8% 42.9%',
+          headerBackground: '205.1 54.5% 80.2%'
         }
       }
   }
