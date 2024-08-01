@@ -1,6 +1,8 @@
 'use client'
 
 import * as React from 'react'
+import Image, { ImageProps } from 'next/image'
+import corpoProfileIcon from '@/assets/images/corpo-profile-icon.png'
 
 import { cn } from '@/lib/utils'
 
@@ -101,6 +103,17 @@ function IconAISparkles({ className, ...props }: React.ComponentProps<'svg'>) {
       <path d="m51.688 2c0 7.917-4.277 15-10.313 15 6.035 0 10.313 7.084 10.313 15 0-7.916 4.277-15 10.313-15-6.036 0-10.313-7.083-10.313-15" />
     </svg>
   )
+}
+
+function IconCorpoGenie() {
+  return (
+    <Image
+      src={corpoProfileIcon}
+      width={64}
+      height={64}
+      alt="CorpoGenie Icon"
+    />
+  );
 }
 
 function IconOpenAI({ className, ...props }: React.ComponentProps<'svg'>) {
@@ -495,6 +508,7 @@ export {
   IconEdit,
   IconNextChat,
   IconAISparkles,
+  IconCorpoGenie,
   IconOpenAI,
   IconVercel,
   IconGitHub,
