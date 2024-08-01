@@ -5,7 +5,7 @@ import remarkMath from 'remark-math'
 import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/codeblock'
 import { MemoizedReactMarkdown } from '@/components/markdown'
-import { IconAISparkles, IconUser } from '@/components/ui/icons'
+import { IconCorpoGenie, IconUser } from '@/components/ui/icons'
 import { ChatMessageActions } from '@/components/chat-message-actions'
 
 export interface ChatMessageProps {
@@ -26,7 +26,7 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
             : 'bg-background text-primary-foreground'
         )}
       >
-        {message.role === 'user' ? <IconUser /> : <IconAISparkles />}
+        {message.role === 'user' ? <IconUser /> : <IconCorpoGenie />}
       </div>
       <div className="ml-2 flex-1 space-y-2 overflow-hidden px-1">
         <MemoizedReactMarkdown
