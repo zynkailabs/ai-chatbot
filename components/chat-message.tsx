@@ -1,7 +1,6 @@
 import { Message } from 'ai'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-
 import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/codeblock'
 import { MemoizedReactMarkdown } from '@/components/markdown'
@@ -10,68 +9,88 @@ import { ChatMessageActions } from '@/components/chat-message-actions'
 
 export interface ChatMessageProps {
   message: Message
+  userBgColor?: string
+  botBgColor?: string
 }
 
-export function ChatMessage({ message, ...props }: ChatMessageProps) {
+export function ChatMessage({
+  message,
+  userBgColor = 'bg-corpoChatPanelBackground',
+  botBgColor = 'bg-gray-100',
+  ...props
+}: ChatMessageProps) {
+  const isUser = message.role === 'user'
+
   return (
     <div
-      className={cn('group relative mb-4 flex items-start md:-ml-12')}
+      className={cn(
+        'group relative mb-4 flex items-start',
+        isUser ? 'justify-end' : 'justify-start'
+      )}
       {...props}
     >
       <div
         className={cn(
-          'flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full border shadow',
-          message.role === 'user'
-            ? 'bg-background'
-            : 'bg-background text-primary-foreground'
+          'flex max-w-[90%] md:max-w-[80%] items-start',
+          isUser ? 'flex-row-reverse' : 'flex-row'
         )}
       >
-        {message.role === 'user' ? <IconUser /> : <IconCorpoGenie />}
-      </div>
-      <div className="ml-2 flex-1 space-y-2 overflow-hidden px-1">
-        <MemoizedReactMarkdown
-          className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
-          remarkPlugins={[remarkGfm, remarkMath]}
-          components={{
-            p({ children }) {
-              return <p className="mb-2 last:mb-0 text-inherit">{children}</p>
-            },
-            code({ node, inline, className, children, ...props }) {
-              if (children.length) {
-                if (children[0] == '▍') {
+        <div
+          className={cn(
+            'flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full border shadow bg-background',
+            isUser ? 'ml-2' : 'mr-2'
+          )}
+        >
+          {isUser ? <IconUser /> : <IconCorpoGenie />}
+        </div>
+        <div
+          className={cn(
+            'rounded-lg px-4 py-2 shadow',
+            isUser ? userBgColor : botBgColor
+          )}
+        >
+          <MemoizedReactMarkdown
+            className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 text-primary"
+            remarkPlugins={[remarkGfm, remarkMath]}
+            components={{
+              p({ children }) {
+                return <p className="mb-2 last:mb-0 text-inherit">{children}</p>
+              },
+              code({ node, inline, className, children, ...props }) {
+                if (children.length) {
+                  if (children[0] == '▍') {
+                    return (
+                      <span className="mt-1 animate-pulse cursor-default">
+                        ▍
+                      </span>
+                    )
+                  }
+                  children[0] = (children[0] as string).replace('`▍`', '▍')
+                }
+                const match = /language-(\w+)/.exec(className || '')
+                if (inline) {
                   return (
-                    <span className="mt-1 animate-pulse cursor-default">▍</span>
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
                   )
                 }
-
-                children[0] = (children[0] as string).replace('`▍`', '▍')
-              }
-
-              const match = /language-(\w+)/.exec(className || '')
-
-              if (inline) {
                 return (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
+                  <CodeBlock
+                    key={Math.random()}
+                    language={(match && match[1]) || ''}
+                    value={String(children).replace(/\n$/, '')}
+                    {...props}
+                  />
                 )
               }
-
-              return (
-                <CodeBlock
-                  key={Math.random()}
-                  language={(match && match[1]) || ''}
-                  value={String(children).replace(/\n$/, '')}
-                  {...props}
-                />
-              )
-            }
-          }}
-        >
-          {message.content}
-        </MemoizedReactMarkdown>
-        {/* <ChatMessageActions message={message} /> */}
+            }}
+          >
+            {message.content}
+          </MemoizedReactMarkdown>
+        </div>
       </div>
+      {/* <ChatMessageActions message={message} /> */}
     </div>
   )
 }
