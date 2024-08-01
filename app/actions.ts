@@ -128,7 +128,8 @@ export async function getCustomClientConfig(
       return {
         clientId: 'corposerve',
         colors: {
-          background: '88, 77%, 78%'
+          background: '88, 77%, 78%',
+          headerBackground: '205.1 54.5% 80.2%'
         }
       }
     default:

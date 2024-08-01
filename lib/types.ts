@@ -25,6 +25,7 @@ export interface CustomClientConfig {
   clientId: string
   colors: {
     background: string
+    headerBackground?: string
     // text: string
     // accent: string
   }

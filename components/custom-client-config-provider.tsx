@@ -15,10 +15,18 @@ export function CustomClientConfigProvider({
   React.useEffect(() => {
     console.log(`Updating colors with config: ${JSON.stringify(config)}`)
     // Apply any global configurations here
-    document.documentElement.style.setProperty(
-      '--background',
-      config.colors.background
-    )
+    if (config.colors.background) {
+      document.documentElement.style.setProperty(
+        '--background',
+        config.colors.background
+      )
+    }
+    if (config.colors.headerBackground) {
+      document.documentElement.style.setProperty(
+        '--background',
+        config.colors.background
+      )
+    }
   }, [config])
 
   return (

@@ -3,7 +3,7 @@ import headerTextImage from '@/assets/images/Header-Text.png'
 
 export function ImageHeader() {
   return (
-    <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-center backdrop-blur-xl bg-corpoHeaderBackground">
+    <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-center backdrop-blur-xl bg-headerBackground">
       <Image
         src={headerTextImage as StaticImageData}
         alt="CS Campus Genie"
