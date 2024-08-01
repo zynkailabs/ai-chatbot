@@ -25,8 +25,8 @@ module.exports = {
         foreground: 'hsl(var(--foreground))',
         corpoBackground: 'hsl(var(--corpo-background))',
         headerBackground: 'hsl(var(--header-background))',
-        corpoChatPanelBackground: 'hsl(var(--corpo-chatpanel-background))',
         userInputArea: 'hsl(var(--user-input-area))',
+        userChatBubble: 'hsl(var(--user-chat-bubble))',
         corpoChatPanelText: 'hsl(var(--corpo-chatpanel-text))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',

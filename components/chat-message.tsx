@@ -15,7 +15,7 @@ export interface ChatMessageProps {
 
 export function ChatMessage({
   message,
-  userBgColor = 'bg-corpoChatPanelBackground',
+  userBgColor = 'bg-userChatBubble',
   botBgColor = 'bg-gray-100',
   ...props
 }: ChatMessageProps) {
