@@ -11,6 +11,7 @@ import { EmptyHeader } from '@/components/empty-header'
 import { TextHeader } from '@/components/text-header'
 import { ImageHeader } from '@/components/image-header'
 import { getCustomClientConfig } from '@/app/actions'
+import { generateStyles } from '@/app/styles'
 
 export const metadata: Metadata = {
   title: {
