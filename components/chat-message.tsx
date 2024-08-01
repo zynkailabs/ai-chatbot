@@ -37,7 +37,7 @@ export function ChatMessage({
       >
         <div
           className={cn(
-            'flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full border shadow bg-background',
+            'flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full border shadow bg-white',
             isUser ? 'ml-2' : 'mr-2'
           )}
         >
