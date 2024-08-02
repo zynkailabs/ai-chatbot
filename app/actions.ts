@@ -128,16 +128,22 @@ export async function getCustomClientConfig(
       return {
         clientId: 'default',
         colors: {
-          background: '0 0% 100%',
-          headerBackground: '205.1 54.5% 80.2%'
+          primary: '0 0% 100%',
+          secondary: '216, 100%, 50%',
+          textPrimary: '0 0% 100%',
+          userChatBubble: '216, 100%, 50%',
+          assistantChatBubble: '205.1 54.5% 80.2%'
         }
       }
     default:
       return {
         clientId: 'corposerve',
         colors: {
-          background: '199.1 38.8% 42.9%',
-          headerBackground: '205.1 54.5% 80.2%'
+          primary: '199.1 38.8% 42.9%',
+          secondary: '205.1 54.5% 80.2%',
+          textPrimary: '240 5.9% 10%',
+          userChatBubble: '205.1 54.5% 80.2%',
+          assistantChatBubble: '205.1 54.5% 80.2%'
         }
       }
   }
