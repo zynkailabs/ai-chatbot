@@ -35,39 +35,10 @@ interface RootLayoutProps {
 }
 
 export default async function RootLayout({ children }: RootLayoutProps) {
-  const clientId = 'corposerve'
-  const config = await getCustomClientConfig(clientId)
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <head />
-      <body
-        className={cn(
-          'font-montserrat antialiased',
-          fontMontserrat.variable,
-          fontMontserrat.variable
-        )}
-      >
-        <Toaster />
-        <Providers
-          config={config}
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-        >
-          <div className="flex min-h-screen flex-col">
-            {/* @ts-ignore */}
-            {config.clientId === 'corposerve' ? (
-              <ImageHeader />
-            ) : (
-              <EmptyHeader />
-            )}
-            <main className="flex flex-1 flex-col bg-background">
-              {children}
-            </main>
-          </div>
-          <TailwindIndicator />
-        </Providers>
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
