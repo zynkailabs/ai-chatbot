@@ -5,6 +5,7 @@
   // const domain = config.domain || document.currentScript.getAttribute('domain');
   const userType = document.currentScript.getAttribute('userType') || 'student';
   const userID = document.currentScript.getAttribute('userID') || '';
+  const clientId = document.currentScript.getAttribute('clientId') || 'corposerve';
 
   // if (!chatbotId || !domain) {
   //   console.error('Chatbot ID and domain are required for embedding.');
@@ -53,7 +54,7 @@
 
   // Create iframe
   const iframe = document.createElement('iframe');
-  iframe.src = `https://vercel-ai-chatbot-with-supabase-xaeb.vercel.app/chatbot-iframe/corposerve?userType=${userType}&userID=${userID}`;
+  iframe.src = `https://vercel-ai-chatbot-with-supabase-xaeb.vercel.app/chatbot-iframe/${clientId}?userType=${userType}&userID=${userID}`;
   iframe.id = 'campus-assistant-chatbot-xaeb-iframe';
   iframe.style.cssText = `
     position: fixed;
