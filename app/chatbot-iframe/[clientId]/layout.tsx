@@ -18,18 +18,30 @@ interface RootLayoutProps {
   params: { clientId: string }
 }
 
-export default async function ChatLayout({ children, params }: RootLayoutProps) {
+const getFontForConfig = (config: any) => {
+  switch (config.clientId) {
+    case 'corposerve':
+      return cn(
+        'font-montserrat antialiased',
+        fontMontserrat.variable,
+        fontMontserrat.variable
+      )
+    case 'aman-ritiz':
+      return cn('font-sans antialiased', fontSans.variable, fontSans.variable)
+    default:
+      return cn('font-sans antialiased', fontSans.variable, fontSans.variable)
+  }
+}
+
+export default async function ChatLayout({
+  children,
+  params
+}: RootLayoutProps) {
   const config = await getCustomClientConfig(params.clientId)
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body
-        className={cn(
-          'font-montserrat antialiased',
-          fontMontserrat.variable,
-          fontMontserrat.variable
-        )}
-      >
+      <body className={getFontForConfig(config)}>
         <Toaster />
         <Providers
           config={config}
