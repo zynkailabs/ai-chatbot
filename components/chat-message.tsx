@@ -40,7 +40,7 @@ export function ChatMessage({
     >
       <div
         className={cn(
-          'flex max-w-[90%] md:max-w-[80%] items-start',
+          'flex max-w-[80%] md:max-w-[70%] items-start',
           isUser ? 'flex-row-reverse' : 'flex-row'
         )}
       >
