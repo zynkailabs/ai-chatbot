@@ -121,7 +121,7 @@ export async function POST(req: Request) {
           threadId,
           {
             assistant_id: assistantId,
-            additional_instructions: constructUserInstructions(userType, userID)
+            additional_instructions: constructUserInstructions(userType, userID, clientId)
           },
           { signal: req.signal }
         )
