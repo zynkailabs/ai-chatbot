@@ -126,14 +126,14 @@ export async function getCustomClientConfig(
   switch (clientId) {
     case 'aman-ritiz':
       return {
-        clientId: 'default',
+        clientId: 'aman-ritiz',
         colors: {
           primary: '0 0% 100%',
           secondary: '216, 100%, 50%',
-          textPrimary: '0 0% 100%',
+          textPrimary: '240, 8%, 12%',
           userChatBubble: '216, 100%, 50%',
-          assistantChatBubble: '205.1 54.5% 80.2%',
-          userInputArea: '205.1 54.5% 80.2%',
+          assistantChatBubble: '240, 6%, 97%',
+          userInputArea: '240, 6%, 97%',
         }
       }
     default:
