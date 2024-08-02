@@ -112,6 +112,7 @@ export async function shareChat(chat: Chat) {
   return payload
 }
 
+// this needs to move to a backend call.
 export async function getCustomClientConfig(
   clientId: string
 ): Promise<CustomClientConfig> {
