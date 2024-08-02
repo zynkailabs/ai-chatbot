@@ -4,8 +4,9 @@ import remarkMath from 'remark-math'
 import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/codeblock'
 import { MemoizedReactMarkdown } from '@/components/markdown'
-import { IconCorpoGenie, IconUser } from '@/components/ui/icons'
+import { IconAISparkles, IconCorpoGenie, IconUser } from '@/components/ui/icons'
 import { ChatMessageActions } from '@/components/chat-message-actions'
+import { useCustomClientConfig } from '@/components/custom-client-config-provider'
 
 export interface ChatMessageProps {
   message: Message
@@ -24,6 +25,10 @@ export function ChatMessage({
   ...props
 }: ChatMessageProps) {
   const isUser = message.role === 'user'
+  const config = useCustomClientConfig()
+  const userIcon = <IconUser />
+  const assistantIcon =
+    config.clientId === 'corposerve' ? <IconCorpoGenie /> : <IconAISparkles />
 
   return (
     <div
@@ -45,7 +50,7 @@ export function ChatMessage({
             isUser ? 'ml-2' : 'mr-2'
           )}
         >
-          {isUser ? <IconUser /> : <IconCorpoGenie />}
+          {isUser ? userIcon : assistantIcon}
         </div>
         <div
           className={cn(
