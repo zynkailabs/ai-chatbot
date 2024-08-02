@@ -130,9 +130,9 @@ export async function getCustomClientConfig(
         clientId: 'aman-ritiz',
         colors: {
           primary: '0 0% 100%',
-          secondary: '216 100% 50%',
+          secondary: '240 8% 12%',
           textPrimary: '240 8% 12%',
-          userChatBubble: '216 100% 50%',
+          userChatBubble: '240 8% 12%',
           assistantChatBubble: '240 6% 97%',
           userChatBubbleText: '0 0% 100%',
           assistantChatBubbleText: '240 5.9% 10%',
