@@ -55,7 +55,7 @@ export function ChatMessage({
         >
           <MemoizedReactMarkdown
             className={cn(
-              "prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0",
+              'prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0',
               isUser ? userTextColor : botTextColor
             )}
             remarkPlugins={[remarkGfm, remarkMath]}
