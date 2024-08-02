@@ -29,6 +29,8 @@ export interface CustomClientConfig {
     textPrimary: string // chat bubble text 
     userChatBubble: string // user chat bubble background
     assistantChatBubble: string // assistant chat bubble background
+    userChatBubbleText: string // user chat bubble text color
+    assistantChatBubbleText: string // assistant chat bubble text color
     userInputArea: string // user input area background
   }
   // icons: {

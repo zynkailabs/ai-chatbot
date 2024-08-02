@@ -133,7 +133,9 @@ export async function getCustomClientConfig(
           textPrimary: '240, 8%, 12%',
           userChatBubble: '216, 100%, 50%',
           assistantChatBubble: '240, 6%, 97%',
-          userInputArea: '240, 6%, 97%',
+          userChatBubbleText: '240 5.9% 10%',
+          assistantChatBubbleText: '240 5.9% 10%',
+          userInputArea: '240, 6%, 97%'
         }
       }
     default:
@@ -145,7 +147,9 @@ export async function getCustomClientConfig(
           textPrimary: '240 5.9% 10%',
           userChatBubble: '205.1 54.5% 80.2%',
           assistantChatBubble: '205.1 54.5% 80.2%',
-          userInputArea: '205.1 54.5% 80.2%',
+          userChatBubbleText: '240 5.9% 10%',
+          assistantChatBubbleText: '240 5.9% 10%',
+          userInputArea: '205.1 54.5% 80.2%'
         }
       }
   }
