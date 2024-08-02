@@ -56,7 +56,11 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         >
           <div className="flex min-h-screen flex-col">
             {/* @ts-ignore */}
-            <ImageHeader />
+            {config.clientId === 'corposerve' ? (
+              <ImageHeader />
+            ) : (
+              <EmptyHeader />
+            )}
             <main className="flex flex-1 flex-col bg-background">
               {children}
             </main>
