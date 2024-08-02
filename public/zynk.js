@@ -13,7 +13,7 @@
   //   return;
   // }
 
-  // SVG icons
+  // SVG icons with explicit width and height attributes
   const upArrowSVG = `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="campus-assistant-chatbot-xaeb-icon">
       <path d="M18 15l-6-6-6 6"/>
@@ -23,10 +23,6 @@
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="campus-assistant-chatbot-xaeb-icon">
       <path d="M6 9l6 6 6-6"/>
     </svg>`
-
-  // GIF alternatives (commented out)
-  // const upArrowGIF = '<img src="path/to/your/up-arrow.gif" alt="Up arrow" class="campus-assistant-chatbot-xaeb-icon">';
-  // const downArrowGIF = '<img src="path/to/your/down-arrow.gif" alt="Down arrow" class="campus-assistant-chatbot-xaeb-icon">';
 
   // Create iframe
   const iframe = document.createElement('iframe')
@@ -51,7 +47,7 @@
     display: none;
   `
 
-  // Add CSS
+  // Add CSS media query for mobile devices
   const style = document.createElement('style')
   style.id = 'campus-assistant-chatbot-xaeb-style'
   style.innerHTML = `
@@ -68,27 +64,9 @@
         right: 10px;
       }
     }
-    .campus-assistant-chatbot-xaeb-icon-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
     .campus-assistant-chatbot-xaeb-icon {
-      width: 80%;
-      height: 80%;
-      display: flex;
-    }
-    .campus-assistant-chatbot-xaeb-icon svg {
-      width: 100%;
-      height: 100%;
-    }
-    .campus-assistant-chatbot-xaeb-icon img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+      width: 24px;
+      height: 24px;
     }
   `
   document.head.appendChild(style)
@@ -96,7 +74,7 @@
   // Create toggle button
   const button = document.createElement('button')
   button.id = 'campus-assistant-chatbot-xaeb-toggle-button'
-  button.innerHTML = `<div class="campus-assistant-chatbot-xaeb-icon-container"><div class="campus-assistant-chatbot-xaeb-icon">${upArrowSVG}</div></div>`
+  button.innerHTML = upArrowSVG
   button.style.cssText = `
     position: fixed;
     bottom: 20px;
@@ -115,8 +93,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0;
-    overflow: hidden;
   `
 
   // Hover animations for button
@@ -137,18 +113,14 @@
       setTimeout(() => {
         iframe.style.display = 'none'
       }, 300)
-      button.querySelector('.campus-assistant-chatbot-xaeb-icon').innerHTML =
-        upArrowSVG
-      // For GIF: button.querySelector('.campus-assistant-chatbot-xaeb-icon').innerHTML = upArrowGIF;
+      button.innerHTML = upArrowSVG
     } else {
       iframe.style.display = 'block'
       setTimeout(() => {
         iframe.style.opacity = '1'
         iframe.style.transform = 'scale(1)'
       }, 0)
-      button.querySelector('.campus-assistant-chatbot-xaeb-icon').innerHTML =
-        downArrowSVG
-      // For GIF: button.querySelector('.campus-assistant-chatbot-xaeb-icon').innerHTML = downArrowGIF;
+      button.innerHTML = downArrowSVG
     }
   }
 
