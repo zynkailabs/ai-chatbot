@@ -9,6 +9,8 @@ export function generateStyles(config: CustomClientConfig): string {
       --user-input-area: ${config.colors.secondary};
       --user-chat-bubble: ${config.colors.userChatBubble};
       --assistant-chat-bubble: ${config.colors.assistantChatBubble};
+      --user-chat-bubble-text: ${config.colors.userChatBubbleText};
+      --assistant-chat-bubble-text: ${config.colors.assistantChatBubbleText};
       --user-input-area: ${config.colors.userInputArea};
     }
   `
