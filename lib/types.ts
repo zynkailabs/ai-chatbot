@@ -24,10 +24,11 @@ export type ServerActionResult<Result> = Promise<
 export interface CustomClientConfig {
   clientId: string
   colors: {
-    background: string
-    headerBackground?: string
-    // text: string
-    // accent: string
+    primary: string // background 
+    secondary: string // header and input text area
+    textPrimary: string // chat bubble text 
+    userChatBubble: string // user chat bubble background
+    assistantChatBubble: string // assistant chat bubble background
   }
   // icons: {
   //   logo: string
