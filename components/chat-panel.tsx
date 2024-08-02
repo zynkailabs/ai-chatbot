@@ -5,6 +5,7 @@ import { PromptForm } from '@/components/prompt-form'
 import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
 import { IconRefresh, IconStop } from '@/components/ui/icons'
 import { FooterText } from '@/components/footer'
+import { useCustomClientConfig } from '@/components/custom-client-config-provider'
 
 export interface ChatPanelProps
   extends Pick<
@@ -31,6 +32,7 @@ export function ChatPanel({
   messages,
   additionalData
 }: ChatPanelProps) {
+  const config = useCustomClientConfig()
   const userType = additionalData?.userType
   const userID = additionalData?.userID
   return (
@@ -58,7 +60,7 @@ export function ChatPanel({
                   content: value,
                   role: 'user'
                 },
-                { data: { userType: userType, userID: userID } }
+                { data: { userType: userType, userID: userID, clientId: config.clientId } }
               )
             }}
             input={input}

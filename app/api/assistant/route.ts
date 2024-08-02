@@ -18,8 +18,12 @@ const USER_FACING_ERROR_MESSAGE =
 
 function constructUserInstructions(
   userType: CorporateServeUserType,
-  userID: string | null
+  userID: string | null,
+  clientId: string
 ): string {
+  if (clientId !== 'corposerve') {
+    return ''
+  }
   const userTypeUppercase = userType.toUpperCase()
   if (!userID) {
     return '\nAdditional Constraints: Before answering user questions, you must first ask them their full name and their student ID. Remember these for all subsequent interactions'
@@ -30,6 +34,27 @@ function constructUserInstructions(
   DO NOT ask user for these. ABSOLUTELY DO NOT use user provided ones even if they do.`
 }
 
+function getAssistantId(clientId: string): string {
+  switch (clientId) {
+    case 'corposerve':
+      return (
+        process.env.ASSISTANT_ID ??
+        (() => {
+          throw new Error('ASSISTANT_ID is not set')
+        })()
+      )
+    case 'aman-ritiz':
+      return (
+        process.env.DEFAULT_ASSISTANT_ID ??
+        (() => {
+          throw new Error('DEFAULT_ASSISTANT_ID is not set')
+        })()
+      )
+    default:
+      throw new Error(`Unknown client ID: ${clientId}`)
+  }
+}
+
 export async function POST(req: Request) {
   // Parse the request body
   const input: {
@@ -38,6 +63,7 @@ export async function POST(req: Request) {
     data: {
       userType?: CorporateServeUserType | null
       userID?: string | null
+      clientId?: string | null
     }
   } = await req.json()
   console.log(`[CampusAssistant] User message: ${input.message}`)
@@ -45,12 +71,18 @@ export async function POST(req: Request) {
   // not doing any validation here for now; we should add it when we have more than one user type
   let userType: CorporateServeUserType = input.data.userType || 'student'
   const userID = input.data.userID || null
-  console.log(`[CampusAssistant] UserType: ${userType} UserID: ${userID}`)
+  const clientId = input.data.clientId || 'corposerve'
+  console.log(
+    `[CampusAssistant] ClientId: ${clientId} UserType: ${userType} UserID: ${userID}`
+  )
 
   console.log(`[CampusAssistant] input threadId: ${input.threadId}`)
 
   // Create a thread if needed
   const threadId = input.threadId ?? (await openai.beta.threads.create({})).id
+
+  const assistantId = getAssistantId(clientId)
+  console.log(`Using assistant: ${assistantId}`)
 
   // Add a message to the thread
   const createdMessage = await openai.beta.threads.messages.create(
@@ -88,11 +120,7 @@ export async function POST(req: Request) {
         runStream = openai.beta.threads.runs.stream(
           threadId,
           {
-            assistant_id:
-              process.env.ASSISTANT_ID ??
-              (() => {
-                throw new Error('ASSISTANT_ID is not set')
-              })(),
+            assistant_id: assistantId,
             additional_instructions: constructUserInstructions(userType, userID)
           },
           { signal: req.signal }
