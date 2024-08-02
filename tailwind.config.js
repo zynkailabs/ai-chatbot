@@ -27,6 +27,8 @@ module.exports = {
         userInputArea: 'hsl(var(--user-input-area))',
         userChatBubble: 'hsl(var(--user-chat-bubble))',
         assistantChatBubble: 'hsl(var(--assistant-chat-bubble))',
+        userChatBubbleText: 'hsl(var(--user-chat-bubble-text))',
+        assistantChatBubbleText: 'hsl(var(--assistant-chat-bubble-text))',
         textPrimary: 'hsl(var(--text-primary))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',

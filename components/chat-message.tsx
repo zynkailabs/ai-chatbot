@@ -11,12 +11,16 @@ export interface ChatMessageProps {
   message: Message
   userBgColor?: string
   botBgColor?: string
+  userTextColor?: string
+  botTextColor?: string
 }
 
 export function ChatMessage({
   message,
   userBgColor = 'bg-userChatBubble',
   botBgColor = 'bg-assistantChatBubble',
+  userTextColor = 'text-userChatBubbleText',
+  botTextColor = 'text-assistantChatBubbleText',
   ...props
 }: ChatMessageProps) {
   const isUser = message.role === 'user'
@@ -50,7 +54,10 @@ export function ChatMessage({
           )}
         >
           <MemoizedReactMarkdown
-            className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 text-textPrimary"
+            className={cn(
+              "prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0",
+              isUser ? userTextColor : botTextColor
+            )}
             remarkPlugins={[remarkGfm, remarkMath]}
             components={{
               p({ children }) {
