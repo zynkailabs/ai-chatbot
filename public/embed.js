@@ -53,7 +53,7 @@
 
   // Create iframe
   const iframe = document.createElement('iframe');
-  iframe.src = `https://vercel-ai-chatbot-with-supabase-xaeb.vercel.app?userType=${userType}&userID=${userID}`;
+  iframe.src = `https://vercel-ai-chatbot-with-supabase-xaeb.vercel.app/chatbot-iframe/corposerve?userType=${userType}&userID=${userID}`;
   iframe.id = 'campus-assistant-chatbot-xaeb-iframe';
   iframe.style.cssText = `
     position: fixed;
