@@ -4,8 +4,8 @@ import { DummyData, dummyDataJson } from './DummyData'
 
 // Define types for our functions and parameters
 type ToolFunction = {
-  func: (...args: any[]) => Promise<any>;
-  params: string[];
+  func: (...args: any[]) => Promise<any>
+  params: string[]
 }
 type ToolParameters = Record<string, any>
 
@@ -16,7 +16,7 @@ const corpoAPIClient = new APIClient(
 )
 
 function getRandomNumberBetween(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min)) + min
+  return Math.floor(Math.random() * (max - min)) + min
 }
 
 const dummyData: DummyData = dummyDataJson
@@ -68,15 +68,15 @@ const toolFunctions: Record<string, ToolFunction> = {
     },
     params: []
   },
-  get_subject_prerequisites: {
+  get_subjects_per_specialization_and_subject_prequisites: {
     func: async (): Promise<any> => {
-      return dummyData['Subject_Prerequisites']
+      return dummyData['Subjects_per_Specialization_and_Subject_Prequisites']
     },
     params: []
   },
-  get_specialization_requirements: {
+  get_course_requirements: {
     func: async (): Promise<any> => {
-      return dummyData['Specialization_Requirements']
+      return dummyData['Course_Requirements']
     },
     params: []
   },
@@ -162,7 +162,9 @@ function validateParameters(
   expectedParams: string[]
 ): void {
   // log all the provided parameters
-  console.log(`Provided parameters for ${functionName}: ${JSON.stringify(providedParams)} and expectedParams: ${expectedParams}`)
+  console.log(
+    `Provided parameters for ${functionName}: ${JSON.stringify(providedParams)} and expectedParams: ${expectedParams}`
+  )
   const providedKeys = Object.keys(providedParams)
 
   console.log(`providedKeys = ${providedKeys}`)
