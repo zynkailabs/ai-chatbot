@@ -70,7 +70,7 @@ const toolFunctions: Record<string, ToolFunction> = {
   },
   get_subjects_per_specialization_and_subject_prequisites: {
     func: async (): Promise<any> => {
-      return dummyData['Subjects_per_Specialization_and_Subject_Prequisites']
+      return dummyData['Subjects_per_Specialization_and_Subject_PreRequisites']
     },
     params: []
   },
