@@ -9,6 +9,8 @@ export const instructionPromptsJson: InstructionPrompts = {
 
   invalid_response: "'''sql\\\"SELECT [Latest GPA] FROM [dbo].[Manipal Education Americas LLC$Student Master-CS]\\n'''"
 
+  Directly give the SQL query as response. Don't add any extra tokens before or after query.
+
     DATABASE INFORMATION
     1. There are 3 database tables: Student Master-CS, Student Subject-CS, Student Subject Exam. 
     2. Students are identified by the Student ID and it is present as 'Student No_' in the Student Subject-CS and Student Subject Exam tables and as 'No_' in the Student Master-CS table.
