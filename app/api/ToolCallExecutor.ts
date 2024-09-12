@@ -1,4 +1,5 @@
 import APIClient from './api_client'
+import RAGClient from './rag_client'
 // import dummyDataJson from './dummy_functions_data.json'
 import { DummyData, dummyDataJson } from './DummyData'
 
@@ -14,6 +15,8 @@ const corpoAPIClient = new APIClient(
   process.env.CLIENT_SECRET || '',
   process.env.SCOPE || ''
 )
+
+const ragClient = new RAGClient('corpo-test')
 
 function getRandomNumberBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
@@ -38,47 +41,20 @@ const toolFunctions: Record<string, ToolFunction> = {
     },
     params: ['query']
   },
-  get_food_menu: {
-    func: async (): Promise<any> => {
-      const menu = dummyData['Food_Menu']
-      const dayNames = [
-        'Sunday',
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday'
-      ]
-      let today = new Date()
-      let day = dayNames[today.getDay()]
-      return JSON.stringify(menu[day])
+  get_university_info: {
+    func: async (query: string): Promise<any> => {
+      try {
+        console.time('[RAG Client] RAG call latency')
+        // const corpoResponse = await corpoAPIClient.fetchData(query)
+        const ragResponse = await ragClient.fetchRAGContext(query, 3)
+        console.timeEnd('[RAG Client] RAG call latency')
+        return ragResponse
+      } catch (error) {
+        console.error('API request failed:', error)
+        return 'there was an error running the query'
+      }
     },
-    params: []
-  },
-  get_office_hours: {
-    func: async (): Promise<any> => {
-      return dummyData['Office_Hours']
-    },
-    params: []
-  },
-  get_university_policy: {
-    func: async (): Promise<any> => {
-      return dummyData['University_Policy']
-    },
-    params: []
-  },
-  get_subjects_per_specialization_and_subject_prerequisites: {
-    func: async (): Promise<any> => {
-      return dummyData['Subjects_per_Specialization_and_Subject_PreRequisites']
-    },
-    params: []
-  },
-  get_course_requirements: {
-    func: async (): Promise<any> => {
-      return dummyData['Course_Requirements']
-    },
-    params: []
+    params: ['query']
   },
   track_ticket_status: {
     func: async (ticket_number: string): Promise<any> => {
@@ -118,24 +94,6 @@ const toolFunctions: Record<string, ToolFunction> = {
       return `Your leave application for ${days} days starting from ${start_date} to ${end_date} has been submitted successfully. Please use the issue ticket number A${application_number} for future reference and tracking.`
     },
     params: ['start_date', 'end_date']
-  },
-  get_university_schedule: {
-    func: async (): Promise<any> => {
-      return dummyData['University_Schedule']
-    },
-    params: []
-  },
-  get_class_schedule: {
-    func: async (): Promise<any> => {
-      return dummyData['Class_Schedule']
-    },
-    params: []
-  },
-  get_housing_availability: {
-    func: async (): Promise<any> => {
-      return dummyData['Housing_Availability']
-    },
-    params: []
   },
   apply_housing_issue: {
     func: async (issue: string): Promise<any> => {

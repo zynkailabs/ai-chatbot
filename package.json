@@ -16,6 +16,7 @@
   "dependencies": {
     "@ai-sdk/openai": "latest",
     "@ai-sdk/react": "latest",
+    "@pinecone-database/pinecone": "latest",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
