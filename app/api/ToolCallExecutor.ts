@@ -1,7 +1,11 @@
 import APIClient from './api_client'
 import RAGClient from './rag_client'
-// import dummyDataJson from './dummy_functions_data.json'
-import { DummyData, dummyDataJson } from './DummyData'
+import LLMClient from './llm_client'
+
+import {
+  InstructionPrompts,
+  instructionPromptsJson
+} from './InstructionPrompts'
 
 // Define types for our functions and parameters
 type ToolFunction = {
@@ -17,20 +21,28 @@ const corpoAPIClient = new APIClient(
 )
 
 const ragClient = new RAGClient('corpo-test')
+const llmClient = new LLMClient()
+
+const instructionPrompts: InstructionPrompts = instructionPromptsJson
 
 function getRandomNumberBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
-const dummyData: DummyData = dummyDataJson
-
 const toolFunctions: Record<string, ToolFunction> = {
   access_data: {
     func: async (query: string): Promise<any> => {
       try {
+        console.time('[CampusAssistant] LLM API call latency')
+        const llmResponse = await llmClient.generateResponse(
+          instructionPrompts['SQL_Database_Prompt'],
+          query
+        )
+        console.timeEnd('[CampusAssistant] LLM API call latency')
+
         console.time('[CampusAssistant] Corposerve API call latency')
         // const corpoResponse = await corpoAPIClient.fetchData(query)
-        const corpoResponse = await corpoAPIClient.fetchSQLData(query)
+        const corpoResponse = await corpoAPIClient.fetchSQLData(llmResponse)
         console.timeEnd('[CampusAssistant] Corposerve API call latency')
 
         return JSON.stringify(corpoResponse)
