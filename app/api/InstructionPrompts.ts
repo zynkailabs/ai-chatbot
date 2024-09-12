@@ -25,11 +25,11 @@ You must return the SQL query inside double quotes. You must not prefix the quer
     11. Use the Main Student Subject-CS table, for subject grades, unless the query is exam specific. Then try the Student Subject Exam table. If confused, ask for clarity.
     12. Course in this database means a degree like MBBS and subject means a class like Pre Medical Sciences II
     13. Make sure you're using the correct column name from the correct table name in the final query.
-        - As an example, enrollment number if given by Enrollment No column in Student Subject table and by Enrollment No_ in Student Master. 
-        - "SELECT [Enrollment No_] FROM [dbo].[Manipal Education Americas LLC$Main Student Subject-CS] WHERE [Student No_] = 'X'" is wrong, as this column in not present in this table
-        - "SELECT [Enrollment No] FROM [dbo].[Manipal Education Americas LLC$Student Master-CS] WHERE [No_] = 'X'" is also wrong, as this column in not present in this table
-        - "SELECT [Enrollment No] FROM [dbo].[Manipal Education Americas LLC$Main Student Subject-CS] WHERE [Student No_] = 'X'"
-        -  Please double check this for all queries you generate. This is essential
+        - As an example, enrollment number is given by [Enrollment No] column in Student Subject-CS table and by [Enrollment No_] in Student Master-CS. 
+        - "SELECT [Enrollment No_] FROM [dbo].[Manipal Education Americas LLC$Main Student Subject-CS] WHERE [Student No_] = 'X'" is wrong, as [Enrollment No_] in not present in Student Subject-CS
+        - "SELECT [Enrollment No] FROM [dbo].[Manipal Education Americas LLC$Student Master-CS] WHERE [No_] = 'X'" is also wrong, as [Enrollment No] in not present in Student Master-CS
+        - "SELECT [Enrollment No] FROM [dbo].[Manipal Education Americas LLC$Main Student Subject-CS] WHERE [Student No_] = 'X'" is correct as [Enrollment No] is present Student Subject-CS
+        -  Please double check this for all queries you generate that column name maps to the correct table. This is essential
 
     DATABASE TABLES AND COLUMNS AVAILABLE
     CREATE TABLE [dbo].[Manipal Education Americas LLC$Main Student Subject-CS](
