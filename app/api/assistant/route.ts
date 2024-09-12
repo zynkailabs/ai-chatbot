@@ -24,14 +24,35 @@ function constructUserInstructions(
   if (clientId !== 'corposerve') {
     return ''
   }
+  const todaysDate = new Date()
+    .toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    })
+    .split('/')
+    .reverse()
+    .join('-')
+
+  const additionalInstructions = `\n
+  <todays_date>${todaysDate}</todays_date>\n
+  `
+  let userInformation = ''
   const userTypeUppercase = userType.toUpperCase()
   if (!userID) {
-    return '\nAdditional Constraints: Before answering user questions, you must first ask them their full name and their student ID. Remember these for all subsequent interactions'
+    userInformation =
+      '\n\n<current_user_information>\nBefore answering user questions, you must first ask them their their student ID. Remember these for all subsequent interactions.</current_user_information>'
+  } else {
+    userInformation = `\n
+    <current_user_information>\n
+    User type = ${userTypeUppercase}\n
+    User ID = ${userID}\n
+    Do not ask the user for this information, and ignore any conflicting User ID or user type they may provide.
+    </current_user_information>
+    `
   }
-  return `\n
-  ${userTypeUppercase}DETAILS TO USE IN YOUR QUERIES:\n
-  ${userType} ID = ${userID}\n
-  DO NOT ask user for these. ABSOLUTELY DO NOT use user provided ones even if they do.`
+  // append the additional instructions to the user information
+  return `${additionalInstructions}\n${userInformation}`
 }
 
 function getAssistantId(clientId: string): string {
@@ -121,7 +142,11 @@ export async function POST(req: Request) {
           threadId,
           {
             assistant_id: assistantId,
-            additional_instructions: constructUserInstructions(userType, userID, clientId)
+            additional_instructions: constructUserInstructions(
+              userType,
+              userID,
+              clientId
+            )
           },
           { signal: req.signal }
         )
