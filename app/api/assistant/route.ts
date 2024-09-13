@@ -4,11 +4,13 @@ import OpenAI from 'openai'
 import { AssistantStream } from 'openai/lib/AssistantStream'
 import { CorporateServeUserType } from 'lib/types'
 import { executeToolCall } from '../ToolCallExecutor'
+import RAGClient from '../rag_client'
 
 // Create an OpenAI API client (that's edge friendly!)
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
 })
+const ragClient = new RAGClient('corpo-test')
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30
@@ -55,6 +57,21 @@ function constructUserInstructions(
   return `${additionalInstructions}\n${userInformation}`
 }
 
+function constructRagContextInstructions(ragContext: string): string {
+  return `\n\n<additional_context_for_user_query>\n${ragContext}\n</additional_context_for_user_query>`
+}
+
+function constructAdditionalInstructions(
+  userType: CorporateServeUserType,
+  userID: string | null,
+  clientId: string,
+  ragContext: string
+): string {
+  const userIntructions = constructUserInstructions(userType, userID, clientId)
+  const ragInstructions = constructRagContextInstructions(ragContext)
+  return `${userIntructions}\n${ragInstructions}`
+}
+
 function getAssistantId(clientId: string): string {
   switch (clientId) {
     case 'corposerve':
@@ -76,6 +93,13 @@ function getAssistantId(clientId: string): string {
   }
 }
 
+async function getRAGContext(userQuery: string): Promise<string> {
+  console.time('[RAG Client] RAG call latency')
+  const ragResponse = await ragClient.fetchRAGContext(userQuery, 3)
+  console.timeEnd('[RAG Client] RAG call latency')
+  return ragResponse
+}
+
 export async function POST(req: Request) {
   // Parse the request body
   const input: {
@@ -88,6 +112,8 @@ export async function POST(req: Request) {
     }
   } = await req.json()
   console.log(`[CampusAssistant] User message: ${input.message}`)
+
+  const ragContext: string = await getRAGContext(input.message)
 
   // not doing any validation here for now; we should add it when we have more than one user type
   let userType: CorporateServeUserType = input.data.userType || 'student'
@@ -142,10 +168,11 @@ export async function POST(req: Request) {
           threadId,
           {
             assistant_id: assistantId,
-            additional_instructions: constructUserInstructions(
+            additional_instructions: constructAdditionalInstructions(
               userType,
               userID,
-              clientId
+              clientId,
+              ragContext
             )
           },
           { signal: req.signal }
