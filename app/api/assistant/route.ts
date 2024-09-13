@@ -41,12 +41,12 @@ function constructUserInstructions(
   const userTypeUppercase = userType.toUpperCase()
   if (!userID) {
     userInformation =
-      '\n\n<current_user_information>\nBefore answering user questions, you must first ask them their their student ID. Remember these for all subsequent interactions.</current_user_information>'
+      '\n\n<current_user_information>\nBefore answering user questions, you must first ask them their their Student ID. Remember these for all subsequent interactions.</current_user_information>'
   } else {
     userInformation = `\n
     <current_user_information>\n
     User type = ${userTypeUppercase}\n
-    User ID = ${userID}\n
+    ${userTypeUppercase} ID = ${userID}\n
     Do not ask the user for this information, and ignore any conflicting User ID or user type they may provide.
     </current_user_information>
     `
