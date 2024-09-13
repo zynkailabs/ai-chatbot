@@ -94,10 +94,15 @@ function getAssistantId(clientId: string): string {
 }
 
 async function getRAGContext(userQuery: string): Promise<string> {
-  console.time('[RAG Client] RAG call latency')
-  const ragResponse = await ragClient.fetchRAGContext(userQuery, 3)
-  console.timeEnd('[RAG Client] RAG call latency')
-  return ragResponse
+  try {
+    console.time('[RAG Client] RAG call latency')
+    const ragResponse = await ragClient.fetchRAGContext(userQuery, 3)
+    console.timeEnd('[RAG Client] RAG call latency')
+    return ragResponse
+  } catch (error) {
+    console.error('RAG API request failed:', error)
+    return 'there was an error running the query'
+  }
 }
 
 export async function POST(req: Request) {
