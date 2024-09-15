@@ -37,7 +37,7 @@ const toolFunctions: Record<string, ToolFunction> = {
     func: async (query: string): Promise<any> => {
       try {
         console.time('[CampusAssistant] LLM API call latency')
-        const llmResponse = await llmClient.generateResponse(
+        const generatedSQLQuery = await llmClient.generateResponse(
           instructionPrompts['SQL_Database_Prompt'],
           query
         )
@@ -45,16 +45,24 @@ const toolFunctions: Record<string, ToolFunction> = {
 
         console.time('[CampusAssistant] Corposerve API call latency')
         // const corpoResponse = await corpoAPIClient.fetchData(query)
-        const corpoResponse = await corpoAPIClient.fetchSQLData(llmResponse)
+        const corpoResponse =
+          await corpoAPIClient.fetchSQLData(generatedSQLQuery)
         console.timeEnd('[CampusAssistant] Corposerve API call latency')
 
-        return (
+        let response =
+          'SQL Query used to query the database:' +
+          '\n' +
+          generatedSQLQuery +
+          '\n' +
+          'Database response:' +
+          '\n' +
           JSON.stringify(corpoResponse) +
           '\n' +
           'Context on values from database and their meaning:' +
           '\n' +
           JSON.stringify(databaseContext)
-        )
+        console.log('[CampusAssistant] assistant_data response:', response)
+        return response
       } catch (error) {
         console.error('API request failed:', error)
         return 'there was an error running the query'
