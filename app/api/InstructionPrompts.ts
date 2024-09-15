@@ -48,7 +48,6 @@ You must return the SQL query only. You must not prefix the query with any block
       [Result] [int] NULL,
       [Attendance Type] [int] NULL,
       [Grade] [nvarchar](20) NULL - Refers to grade assigned to the student for a Description or Subject Code. eg - H, HP, F etc. ,
-      [Completed] [tinyint] NULL,
       [Student Name] [nvarchar](100) NULL,
       [Credit] [decimal](38, 20) NULL - Refers to Credit assigned to the student for a particular subject given by Description or Subject Code ,
       [CBCS Batch] [nvarchar](20) NULL,
