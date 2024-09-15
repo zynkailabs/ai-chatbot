@@ -7,7 +7,7 @@ import {
   instructionPromptsJson
 } from './InstructionPrompts'
 
-import databaseContextJson from './DatabaseContext'
+import { databaseContextJson } from './DatabaseContext'
 
 // Define types for our functions and parameters
 type ToolFunction = {
@@ -27,7 +27,6 @@ const llmClient = new LLMClient()
 
 const instructionPrompts: InstructionPrompts = instructionPromptsJson
 const databaseContext = databaseContextJson
-
 
 function getRandomNumberBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
@@ -49,7 +48,13 @@ const toolFunctions: Record<string, ToolFunction> = {
         const corpoResponse = await corpoAPIClient.fetchSQLData(llmResponse)
         console.timeEnd('[CampusAssistant] Corposerve API call latency')
 
-        return JSON.stringify(corpoResponse) + '\n' + 'Context on values from database and their meaning:' + '\n'+ JSON.stringify(databaseContext)
+        return (
+          JSON.stringify(corpoResponse) +
+          '\n' +
+          'Context on values from database and their meaning:' +
+          '\n' +
+          JSON.stringify(databaseContext)
+        )
       } catch (error) {
         console.error('API request failed:', error)
         return 'there was an error running the query'
