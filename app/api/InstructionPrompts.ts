@@ -30,6 +30,7 @@ You must return the SQL query only. You must not prefix the query with any block
         - SELECT [Enrollment No] FROM [dbo].[Manipal Education Americas LLC$Student Master-CS] WHERE [No_] = 'X' is also wrong, as [Enrollment No] in not present in Student Master-CS
         - SELECT [Enrollment No] FROM [dbo].[Manipal Education Americas LLC$Main Student Subject-CS] WHERE [Student No_] = 'X' is correct as [Enrollment No] is present Student Subject-CS
         -  Please double check this for all queries you generate that column name maps to the correct table. This is essential
+    14. For any Subject related query, if its related to Student Subject Table, always include both [Subject Code] and [Description] columns along with others relevant to the request
 
     DATABASE TABLES AND COLUMNS AVAILABLE
     CREATE TABLE [dbo].[Manipal Education Americas LLC$Main Student Subject-CS](
@@ -48,7 +49,6 @@ You must return the SQL query only. You must not prefix the query with any block
       [Result] [int] NULL,
       [Attendance Type] [int] NULL,
       [Grade] [nvarchar](20) NULL - Refers to grade assigned to the student for a Description or Subject Code. eg - H, HP, F etc. ,
-      [Completed] [tinyint] NULL,
       [Student Name] [nvarchar](100) NULL,
       [Credit] [decimal](38, 20) NULL - Refers to Credit assigned to the student for a particular subject given by Description or Subject Code ,
       [CBCS Batch] [nvarchar](20) NULL,
