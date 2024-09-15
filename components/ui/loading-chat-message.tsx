@@ -1,4 +1,5 @@
-// LoadingChatMessage.tsx
+'use client'
+
 import React from 'react'
 
 export function LoadingChatMessage() {
@@ -28,7 +29,8 @@ export function LoadingChatMessage() {
       {/* Custom fade animation */}
       <style jsx>{`
         @keyframes fade {
-          0%, 100% {
+          0%,
+          100% {
             background-color: #000000;
           }
           50% {
