@@ -16,10 +16,12 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { toast } from 'react-hot-toast'
+import { LoadingChatMessage } from './ui/loading-chat-message'
+import { ChatMessage } from '@/components/chat-message'
 
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
@@ -31,13 +33,20 @@ export interface ChatProps extends React.ComponentProps<'div'> {
   }
 }
 
-export function Chat({ id, initialMessages, className, additionalData }: ChatProps) {
+export function Chat({
+  id,
+  initialMessages,
+  className,
+  additionalData
+}: ChatProps) {
   const [previewToken, setPreviewToken] = useLocalStorage<string | null>(
     'ai-token',
     null
   )
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
+  const [showLoadingMessage, setShowLoadingMessage] = useState(false)
+
   const {
     messages,
     append,
@@ -49,13 +58,40 @@ export function Chat({ id, initialMessages, className, additionalData }: ChatPro
     handleInputChange,
     error
   } = useAssistant({ api: '/api/assistant' })
+
   const isLoading = status === 'in_progress'
+  const latestMessage = messages[messages.length - 1]
+  const loadingMessage: Message = {
+    id: 'loading-message',
+    role: 'assistant',
+    content: '...'
+  }
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout
+    if (isLoading && latestMessage.role === 'user') {
+      // Set timeout to show loading message after 500ms
+      timeout = setTimeout(() => {
+        setShowLoadingMessage(true)
+      }, 500)
+    } else {
+      setShowLoadingMessage(false)
+    }
+
+    return () => clearTimeout(timeout)
+  }, [isLoading, latestMessage])
+
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
         {messages.length ? (
           <>
             <ChatList messages={messages} />
+            {showLoadingMessage ? (
+              <div className="relative mx-auto max-w-2xl px-4">
+                <ChatMessage message={loadingMessage} isLoadingChatMessage={true} />
+              </div>
+            ) : null}
             <ChatScrollAnchor trackVisibility={isLoading} />
           </>
         ) : (
