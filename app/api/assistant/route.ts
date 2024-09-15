@@ -64,12 +64,14 @@ function constructRagContextInstructions(ragContext: string): string {
 function constructAdditionalInstructions(
   userType: CorporateServeUserType,
   userID: string | null,
-  clientId: string,
-  ragContext: string
+  clientId: string
+  //ragContext: string
 ): string {
   const userIntructions = constructUserInstructions(userType, userID, clientId)
-  const ragInstructions = constructRagContextInstructions(ragContext)
-  return `${userIntructions}\n${ragInstructions}`
+
+  //const ragInstructions = constructRagContextInstructions(ragContext)
+  //return `${userIntructions}\n${ragInstructions}`
+  return `${userIntructions}`
 }
 
 function getAssistantId(clientId: string): string {
@@ -141,7 +143,8 @@ export async function POST(req: Request) {
     threadId,
     {
       role: 'user',
-      content: input.message
+      content:
+        input.message + '\n' + constructRagContextInstructions(ragContext)
     },
     { signal: req.signal }
   )
@@ -176,8 +179,8 @@ export async function POST(req: Request) {
             additional_instructions: constructAdditionalInstructions(
               userType,
               userID,
-              clientId,
-              ragContext
+              clientId
+              //ragContext
             )
           },
           { signal: req.signal }
