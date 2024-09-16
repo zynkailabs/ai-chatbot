@@ -134,15 +134,14 @@ export async function POST(req: Request) {
 
   const assistantId = getAssistantId(clientId)
   console.log(`Using assistant: ${assistantId}`)
-  
-  console.log(`[CampusAssistant] user request: ${input.message}`)
+
 
   // Add a message to the thread
   const createdMessage = await openai.beta.threads.messages.create(
     threadId,
     {
       role: 'user',
-      content: input.message + '\n' + constructRagContextInstructions(ragContext)
+      content: constructRagContextInstructions(ragContext) + '\n' + input.message
     },
     { signal: req.signal }
   )
@@ -178,7 +177,6 @@ export async function POST(req: Request) {
               userType,
               userID,
               clientId
-              //ragContext
             )
           },
           { signal: req.signal }
