@@ -1,6 +1,14 @@
 import { Pinecone } from '@pinecone-database/pinecone'
 import OpenAI from 'openai'
 
+interface Match {
+    score: number;
+    metadata: {
+      text?: string;
+    };
+  }
+
+
 class RAGClient {
     private pc_client: Pinecone
     private index: any // Use the correct type from Pinecone if available
@@ -18,7 +26,8 @@ class RAGClient {
 
     async getNearestNeighborsText(
         query_emb: number[],
-        k: number
+        k: number,
+        similarity_threshold: number = 0.3
     ): Promise<string> {
         try {
             const queryResponse = await this.index.query({
@@ -27,8 +36,12 @@ class RAGClient {
                 includeMetadata: true
             })
             console.log('Query Response:', queryResponse)
-            const text_context: string[] = queryResponse.matches.map(
-                (match: any) => match.metadata.text
+            const text_context: string[] = queryResponse.matches
+            .filter(
+                (match: Match) => match.score >= similarity_threshold
+            )
+            .map(
+                (match: Match) => match.metadata.text
             )
             return text_context.join('\n\n')
         } catch (error) {
@@ -55,7 +68,7 @@ class RAGClient {
         }
     }
 
-    async fetchRAGContext(query: string, k: number = 5): Promise<string> {
+    async fetchRAGContext(query: string, k: number = 3, similarity_threshold: number = 0.3): Promise<string> {
         try {
             const embedding = await this.getQueryEmb(query)
             const rag_context = await this.getNearestNeighborsText(embedding, k)

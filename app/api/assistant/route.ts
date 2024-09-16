@@ -95,7 +95,7 @@ function getAssistantId(clientId: string): string {
 async function getRAGContext(userQuery: string): Promise<string> {
   try {
     console.time('[RAG Client] RAG call latency')
-    const ragResponse = await ragClient.fetchRAGContext(userQuery, 3)
+    const ragResponse = await ragClient.fetchRAGContext(userQuery, 3, 0.3)
     console.timeEnd('[RAG Client] RAG call latency')
     return ragResponse
   } catch (error) {
