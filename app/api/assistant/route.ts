@@ -58,19 +58,16 @@ function constructUserInstructions(
 }
 
 function constructRagContextInstructions(ragContext: string): string {
-  return `\n\n<additional_context_for_user_query>\n${ragContext}\n</additional_context_for_user_query>`
+  return `<additional_context_for_user_query>\n${ragContext}\n</additional_context_for_user_query>`
 }
 
 function constructAdditionalInstructions(
   userType: CorporateServeUserType,
   userID: string | null,
   clientId: string
-  //ragContext: string
 ): string {
   const userIntructions = constructUserInstructions(userType, userID, clientId)
 
-  //const ragInstructions = constructRagContextInstructions(ragContext)
-  //return `${userIntructions}\n${ragInstructions}`
   return `${userIntructions}`
 }
 
@@ -137,14 +134,15 @@ export async function POST(req: Request) {
 
   const assistantId = getAssistantId(clientId)
   console.log(`Using assistant: ${assistantId}`)
+  
+  console.log(`[CampusAssistant] user request: ${input.message}`)
 
   // Add a message to the thread
   const createdMessage = await openai.beta.threads.messages.create(
     threadId,
     {
       role: 'user',
-      content:
-        input.message + '\n' + constructRagContextInstructions(ragContext)
+      content: input.message + '\n' + constructRagContextInstructions(ragContext)
     },
     { signal: req.signal }
   )
